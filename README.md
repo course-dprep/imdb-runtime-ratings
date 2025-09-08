@@ -5,8 +5,8 @@
 
 
 
-# Title of your Project
-How does runtime influence IMDb ratings, and how is this relationship moderated by genre (Drama, Action and Comedy) when comparing films released before 2015 to those released after 2015?
+# How does runtime influence IMDb ratings, and how is this relationship moderated by genre (Drama, Action and Comedy) when comparing films released before 2015 to those released after 2015?
+
 
 ## Motivation
 
