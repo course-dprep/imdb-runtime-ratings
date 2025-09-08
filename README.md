@@ -2,21 +2,34 @@
 >  
 > You are free to modify it based on your needs. For example, if your data is downloaded using *multiple* scripts instead of a single one (as shown in `\data\`), structure the code accordingly. The same applies to all other starter files—adapt or remove them as needed.  
 >  
-> Feel free to delete this text.
+
 
 
 # Title of your Project
-*Describe the purpose of this project* 
+How does runtime influence IMDb ratings, and how is this relationship moderated by genre (Drama, Action and Comedy) when comparing films released before 2015 to those released after 2015?
 
 ## Motivation
 
-*Provide background/motivation for your project*
+In today’s world, movie ratings play an integral part when viewers decide which movie to watch. Among the many factors that influence the rating of a movie, runtime stands out as a relevant one when it comes to audience evaluation. Previously, a study by Choudhary et al. (2024) found runtime to be a statistically significant variable, influencing the rating of a movie across different genres, though the magnitude of this effect varied between genres. This raises the question about exploring not only the magnitude, but also the direction of the runtime effect. On the one hand, longer movies allow for more complex storytelling and character development, but on the other hand, decreasing attention spans (Hayes, 2024) among people may actually drive longer movie ratings down. 
 
-**Mention your research question**
+Previous research suggests a significant relationship between movie genres and their ratings, however often note that isolation of the genre variable is not clearly attainable (Choudhary et al., 2024). While there is no clear consensus in the literature on which genres consistently receive the highest ratings, Matthews (2021) argues that audience expectations are more structured for mainstream genres such as drama, action, and comedy than for niche categories. In these popular genres, ratings often reflect not only film quality but also how well a movie aligns with established genre conventions. This implies that popular genres bring a variety of expectations in consumers’ perceptions of the movie, which in turn reflects in the ratings. 
+
+In addition to examining the relationship between runtime, genre, and IMDb ratings, it is also important to define a clear time interval for the research. The global Netflix subscriber data provides a useful benchmark: in early 2013, Netflix had around 30 million paid subscribers, but by 2015 that number had more than doubled to over 70 million. (Netflix, 2025) This rapid acceleration reflects the point at which streaming shifted from an emerging model to a mainstream mode of media consumption, making 2015 a suitable cutoff year. Streaming services mark a natural cutoff point because they changed how runtimes are perceived: before streaming, films were optimized for theatrical showings and ticket sales, while streaming enabled more flexibility in length. As audiences gained on-demand access, tolerance for both shorter and longer runtimes shifted, making streaming adoption a key turning point for analyzing runtime effects on IMDb ratings. Accordingly, the research will compare films released before 2015 with those released from 2015 onward.
+
+Thus, the research question for this project is defined as “How does runtime influence IMDb ratings, and how is this relationship moderated by genre (Drama, Action and Comedy) when comparing films released before 2015 to those released after 2015?”
+This research addresses a gap in the currently existing literature of factors that influence audience reception of movies such as IMDb ratings by investigating how the release year (before 2015 versus post 2015) and genre (Drama, Action and Comedy) have a moderating effect on the relationship between runtime and IMDb ratings of movies. Previous research looked at the individual effects of runtime, release year and genre (Horror, Comedy and Action) on IMDb ratings while this research also looks at the relative effects of these variables and how they interact with each other. 
+
+Further, this research is relevant to different marketing stakeholders in the movie industry such as marketing managers of movie studios, streaming platforms and cinemas. By providing valuable insights on the runtime preferences of audiences these can be used for example by movie studios to create movies across different genres with an optimal runtime and by streaming platforms and cinemas to find the optimal marketing strategy to movies of different runtimes and genres. 
+
+
 
 ## Data
 
 - What dataset(s) did you use? How was it obtained?
+  We are using two files from the IMDB database:
+  1) title.basics.tsv.gz (contains unique identifier of the title, the type/format of the title, original title, the release year of a title, TV Series end year, primary runtime of the title, genres)
+  2) title.ratings.tsv.gz (contains unique identifier of the title, averageRating and number of votes the title has received)
+     
 - How many observations are there in the final dataset? 
 - Include a table of variable description/operstionalisation. 
 
