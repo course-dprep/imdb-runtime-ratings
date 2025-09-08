@@ -36,7 +36,18 @@ test123
 ## Method
 
 - What methods do you use to answer your research question?
-- Provide justification for why it is the most suitable. 
+- Provide justification for why it is the most suitable.
+
+- For this research we will perform a multiple linear regression with interaction terms to find out whether the runtime of a movie (continuous) influences its IMDb rating (continuous) and whether a film’s genre (Comedy, Adventure or Action) (categorical) and the release period (2011-2015 vs. 2016-2020) (categorical) influence this relationship. The runtime is the independent variable, the IMDb rating is the dependent variable and the two moderators are Genre (Comedy vs. Adventure vs. Action) and Release Period (2011-2015 vs. 2016-2020). Further, we will include the number of IMDb votes (expressed as a log-scaled variable) as a control variable since ratings based on more votes are usually more stable and reliable (Xie & Lui, 2013). We have chosen for a multiple linear regression with interaction terms as this is the most suitable way to combine these variable types, a continuous independent and dependent variable and two categorical moderators, into one model.
+This will lead to the following model:
+Rating = 0 + 1*Runtime10 + 2*Adventure + 3*Action + 4Yeargroup2016-2020 + 5*(Runtime x Adventure) + 6*(Runtime10 x Action) + 7*(Runtime x Yeargroup2016-2020) + 8*log10(Votes) + , where
+
+1 = How he effect of +10 minutes runtime on IMDb ratings changes for Comedy movies released in 2011-2015
+4 = How the IMDb ratings change between movies released in 2016-2020 compared to movies released in 2011-2015
+5, 6 = How the effect of +10 minutes runtime on IMDb ratings changes for Adventure and Action movies compared to Comedy movies
+7 = How the effect of +10 minutes runtime on IMDb ratings changes for movies released in 2016-2020 compared to 2011-2015
+8 = How the IMDb ratings change between movies when the number of votes increases by a factor of 10 
+
 
 ## Preview of Findings 
 - Describe the gist of your findings (save the details for the final paper!)
