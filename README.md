@@ -21,7 +21,7 @@ This research addresses a gap in the currently existing literature of factors th
 
 Further, this research is relevant to different marketing stakeholders in the movie industry such as marketing managers of movie studios, streaming platforms and cinemas. By providing valuable insights on the runtime preferences of audiences these can be used for example by movie studios to create movies across different genres with an optimal runtime and by streaming platforms and cinemas to find the optimal marketing strategy to movies of different runtimes and genres. 
 
-test123
+test123 123 123
 
 ## Data
 
