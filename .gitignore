@@ -2,3 +2,15 @@
 
 .DS_Store
 .Rproj.user
+data/
+*.tsv.gz
+*.zip
+*.parquet
+data/
+*.tsv.gz
+*.zip
+*.parquet
+data/
+*.tsv.gz
+*.zip
+*.parquet
