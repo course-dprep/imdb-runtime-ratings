@@ -36,7 +36,12 @@ str(basics)
 basics$startYear <- as.numeric(basics$startYear)
 basics$runtimeMinutes <- as.numeric(basics$runtimeMinutes)
 
-ratings <- ratings %>% select(tconst,averageRating)
-basics <- basics %>% select(tconst,titleType,primaryTitle,startYear,runtimeMinutes) %>% filter(titleType =="movie", startYear >= 2011, startYear <= 2020, !is.na(runtimeMinutes))
+ratings <- ratings %>% select(tconst,averageRating,numVotes)
+basics <- basics %>% select(tconst,titleType,primaryTitle,startYear,runtimeMinutes, genres) %>% filter(titleType =="movie", startYear >= 2011, startYear <= 2020, !is.na(runtimeMinutes))
 ```
+' ' ' Merging Two Data Frames
+
+merged_df <- merge(basics, ratings, by = "tconst")
+
+
 
