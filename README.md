@@ -70,4 +70,5 @@ Rating = 0 + 1*Runtime10 + 2*Adventure + 3*Action + 4Yeargroup201
 
 This project is set up as part of the Master's course [Data Preparation & Workflow Management](https://dprep.hannesdatta.com/) at the [Department of Marketing](https://www.tilburguniversity.edu/about/schools/economics-and-management/organization/departments/marketing), [Tilburg University](https://www.tilburguniversity.edu/), the Netherlands.
 
-The project is implemented by team < x > members: < insert member details>
+The project is implemented by team 7 
+members: Berkay Ustundag - 2044582
