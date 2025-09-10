@@ -30,7 +30,7 @@ test123 123 123
   1) title.basics.tsv.gz (contains unique identifier of the title, the type/format of the title, original title, the release year of a title, TV Series end year, primary runtime of the title, genres)
   2) title.ratings.tsv.gz (contains unique identifier of the title, averageRating and number of votes the title has received)
      
-- How many observations are there in the final dataset? 20144 observations are present in the final dataset
+- The final dataset includes 20144 observations. 
 - Include a table of variable description/operstionalisation. 
 
 ## Method
