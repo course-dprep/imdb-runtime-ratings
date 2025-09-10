@@ -85,6 +85,10 @@ This project is set up as part of the Master's course [Data Preparation & Workfl
 The project is implemented by team 7 
 members: 
 - Berkay Ustundag - 2044582
+- Eva Kortezova - 2163260
+- Berk Yilmaz - 2164297
+- Yaz Ucar - 2153214
+- Victor van Rossum - 2042008
 
 d 
 
