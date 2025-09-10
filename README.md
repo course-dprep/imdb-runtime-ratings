@@ -42,7 +42,15 @@ Further, this research is relevant to different marketing stakeholders in the mo
 | `averageRating` | Average rating                                        | Mean user score (scale 1–10) taken directly from dataset          |
 | `numVotes`      | Number of votes                                       | Count of user ratings submitted taken directly from dataset       |
 
-
+| Variable        | Type              | Source              | Operationalisation (How it is measured/defined)                                 |
+|-----------------|-------------------|---------------------|---------------------------------------------------------------------------------|
+| `Rating`        | Dependent         | `title.ratings`     | `averageRating` (on a scale of 1-10, continuous)                                |
+| `Runtime10`     | Independent       | `title.basics`      | (`runtimeMinutes` - mean(`runtimeMinutes`))/10                                  |
+| `Genre`         | Moderator         | `title.basics`      | Comedy (reference), Adventure (dummy), Action (dummy)                           |
+| `YearGroup`     | Moderator         | `title.basics`      | 2011-2015 (reference), 2016-2020 (dummy)                                        |  
+| `numVotes`      | Control           | `title.rating`      | Total IMDb votes                                                                |
+| `logVotes`      | Control           |  Derived            | log10(`numVotes`). Interpreted as +1 = 10x more votes                           |
+| `Intercept`     | Derived           |  Model              | Comedy movie, 2011-2015, mean `runtimeMinutes`, mean `logVotes`                 |
 
 ## Method
 
