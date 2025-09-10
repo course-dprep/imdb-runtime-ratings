@@ -4,11 +4,13 @@ install.packages("readr")
 install.packages("fs")
 install.packages("data.table")
 install.packages("R.utils")
+install.packages("stringr")
 library(dplyr)
 library(readr)
 library(fs)
 library(data.table)
-library("R.utils")
+library(R.utils)
+library(stringr)
 ```
 
 Data Pulling Script
@@ -40,8 +42,14 @@ ratings <- ratings %>% select(tconst,averageRating,numVotes)
 basics <- basics %>% select(tconst,titleType,primaryTitle,startYear,runtimeMinutes, genres) %>% filter(titleType =="movie", startYear >= 2011, startYear <= 2020, !is.na(runtimeMinutes))
 ```
 ' ' ' Merging Two Data Frames
-
+```{r}
 merged_df <- merge(basics, ratings, by = "tconst")
+
+merged_df <- merged_df %>%  filter((str_detect(merged_df$genres,"Comedy")) | (str_detect(merged_df$genres,"Action")) |(str_detect(merged_df$genres,"Adventure"))) %>% filter(runtimeMinutes >=30) %>% filter(numVotes >=50)
+
+```
+
+
 
 
 
