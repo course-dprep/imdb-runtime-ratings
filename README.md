@@ -57,7 +57,7 @@ where:
 - β₁ = How the effect of +10 minutes runtime on IMDb ratings changes for Comedy movies released in 2011–2015  
 - β₄ = How the IMDb ratings change between movies released in <sub>2016–2020</sub> compared to movies released in 2011–2015  
 - β₅, β₆ = How the effect of +10 minutes runtime on IMDb ratings changes for Adventure and Action movies compared to Comedy movies  
-- β₇ = How the effect of +10 minutes runtime on IMDb ratings changes for movies released in <sub>2016–2020</sub> compared to 2011–2015  
+- β₇ = How the effect of +10 minutes runtime on IMDb ratings changes for movies released in 2016–2020 compared to 2011–2015  
 - β₈ = How the IMDb ratings change between movies when the number of votes increases by a factor of 10  
 
 
