@@ -31,6 +31,20 @@ Further, this research is relevant to different marketing stakeholders in the mo
 - The final dataset includes 20144 observations. 
 - Include a table of variable description/operstionalisation. 
 
+## Variable Description and Operationalisation
+
+| Variable        | Description                                           | Operationalisation (How it is measured/defined)                   |
+|-----------------|-------------------------------------------------------|-------------------------------------------------------------------|
+| `titleType. `   | Genre of the production (eg.movie, tv series)         | Taken directly from dataset (string)                              |
+| `primaryTitle`  | Movie title                                           | Taken directly from dataset (string)                              |
+| `startYear`     | Year of release                                       | Taken directly from dataset (string)                              |
+| `runtimeMinutes`| Duration of the movie                                 | Taken directly from dataset, minutes (numeric)                    |  
+| `genres`        | Movie genres (e.g. "Comedy, Action")                  | Taken directly from dataset (string), may include multiple genres |
+| `averageRating` | Average rating                                        | Mean user score (scale 1–10) taken directly from dataset          |
+| `numVotes`      | Number of votes                                       | Count of user ratings submitted taken directly from dataset       |
+
+
+
 ## Method
 
 - What methods do you use to answer your research question?
