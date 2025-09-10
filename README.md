@@ -51,13 +51,14 @@ Further, this research is relevant to different marketing stakeholders in the mo
 
 - For this research we will perform a multiple linear regression with interaction terms to find ou  t whether the runtime of a movie (continuous) influences its IMDb rating (continuous) and whether a film’s genre (Comedy, Adventure or Action) (categorical) and the release period (2011-2015 vs. 2016-2020) (categorical) influence this relationship. The runtime is the independent variable, the IMDb rating is the dependent variable and the two moderators are Genre (Comedy vs. Adventure vs. Action) and Release Period (2011-2015 vs. 2016-2020). Further, we will include the number of IMDb votes (expressed as a log-scaled variable) as a control variable since ratings based on more votes are usually more stable and reliable (Xie & Lui, 2013). We have chosen for a multiple linear regression with interaction terms as this is the most suitable way to combine these variable types, a continuous independent and dependent variable and two categorical moderators, into one model.
 This will lead to the following model:
-Rating = X_0 + $\beta$1*Runtime10 + $\beta$2*Adventure + $\beta$3*Action + $\beta$4Yeargroup2016-2020 + $\beta$5*(Runtime x Adventure) + $\beta$6*(Runtime10 x Action) + $\beta$7*(Runtime x Yeargroup2016-2020) + $\beta$8*log10(Votes) + $\epsilon$, where
+Rating = X₀ + β₁·Runtime10 + β₂·Adventure + β₃·Action + β₄·Yeargroup<sub>2016–2020</sub> + β₅·(Runtime × Adventure) + β₆·(Runtime10 × Action) + β₇·(Runtime × Yeargroup<sub>2016–2020</sub>) + β₈·log₁₀(Votes) + ϵ  
 
-$\beta$1 = How he effect of +10 minutes runtime on IMDb ratings changes for Comedy movies released in 2011-2015
-$\beta$4 = How the IMDb ratings change between movies released in 2016-2020 compared to movies released in 2011-2015
-$\beta$5, $\beta$6 = How the effect of +10 minutes runtime on IMDb ratings changes for Adventure and Action movies compared to Comedy movies
-$\beta$7 = How the effect of +10 minutes runtime on IMDb ratings changes for movies released in 2016-2020 compared to 2011-2015
-$\beta$8 = How the IMDb ratings change between movies when the number of votes increases by a factor of 10 
+where:  
+- β₁ = How the effect of +10 minutes runtime on IMDb ratings changes for Comedy movies released in 2011–2015  
+- β₄ = How the IMDb ratings change between movies released in <sub>2016–2020</sub> compared to movies released in 2011–2015  
+- β₅, β₆ = How the effect of +10 minutes runtime on IMDb ratings changes for Adventure and Action movies compared to Comedy movies  
+- β₇ = How the effect of +10 minutes runtime on IMDb ratings changes for movies released in <sub>2016–2020</sub> compared to 2011–2015  
+- β₈ = How the IMDb ratings change between movies when the number of votes increases by a factor of 10  
 
 
 ## Preview of Findings 
