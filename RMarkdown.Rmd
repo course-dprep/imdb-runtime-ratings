@@ -1,52 +1,85 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 ```{r}
+
 install.packages("dplyr")
 install.packages("readr")
 install.packages("fs")
 install.packages("data.table")
 install.packages("R.utils")
 install.packages("stringr")
+tinytex::install_tinytex()()
 library(dplyr)
 library(readr)
 library(fs)
 library(data.table)
 library(R.utils)
 library(stringr)
+
 ```
 
 Data Pulling Script
 ```{r}
-base_url <- "https://datasets.imdbws.com/"
-files <- c("title.basics.tsv.gz", "title.ratings.tsv.gz")
-out_dir <- "data/imdb"
-dir_create(out_dir)
+# Set up base URL and file list
+base_url <- "https://datasets.imdbws.com/"   # Base URL for IMDb datasets
+files <- c("title.basics.tsv.gz", "title.ratings.tsv.gz") # The two datasets we want to download
+# Set up output directory 
+out_dir <- "data/imdb" # Folder to store the downloaded files
+dir_create(out_dir) # Create the directory if it doesn't already exist
+# Download IMDb files if not already present locally ---
 for (f in files) {
-  dest <- file.path(out_dir, f)
-  if (!file_exists(dest)) {
-    download.file(paste0(base_url, f), destfile = dest, mode = "wb", quiet = TRUE)
+  dest <- file.path(out_dir, f)  # Full local path for each file
+  if (!file_exists(dest)) {  # Only download if file is missing
+    download.file(paste0(base_url, f), # Construct the full URL
+    destfile = dest,  # Where to save it locally
+    mode = "wb", # Write in binary mode (important for .gz files)
+    quiet = TRUE) # Suppress download messages
+
   }
 }
+# Load IMDb datasets into R 
+# fread() from data.table is used for fast reading of large .tsv files
+
 basics   <- fread(file.path(out_dir, "title.basics.tsv.gz"),
                   sep = "\t", na.strings = "\\N", quote = "")
 ratings  <- fread(file.path(out_dir, "title.ratings.tsv.gz"),
                   sep = "\t", na.strings = "\\N", quote = "")
 ```
 ```{r}
+#Quick exploration of the datasets
 summary(ratings)
 summary(basics)
 str(ratings)
 str(basics)
+# Convert columns stored as character to numeric for easier analysis
 basics$startYear <- as.numeric(basics$startYear)
 basics$runtimeMinutes <- as.numeric(basics$runtimeMinutes)
-
-ratings <- ratings %>% select(tconst,averageRating,numVotes)
-basics <- basics %>% select(tconst,titleType,primaryTitle,startYear,runtimeMinutes, genres) %>% filter(titleType =="movie", startYear >= 2011, startYear <= 2020, !is.na(runtimeMinutes))
 ```
-' ' ' Merging Two Data Frames
+
+
 ```{r}
+# Select only the relevant columns from basics dataset
+basics <- basics %>% select(tconst, # Unique title identifier (key for merging)
+                            titleType,  # Type of the title (movie, short, tvSeries, etc.)
+                            primaryTitle, # Main title
+                            startYear,  # Release year
+                            runtimeMinutes, # Duration in minutes
+                            genres # List of genres
+)%>% filter(titleType =="movie", # Keep only feature films
+                             startYear >= 2011, startYear <= 2020, # Released from 2011 onwards up to 2020
+                             !is.na(runtimeMinutes)) # Exclude entries with missing runtime
+```
+
+```{r}
+# Merge basics and ratings datasets on the common key "tconst"
 merged_df <- merge(basics, ratings, by = "tconst")
-
-merged_df <- merged_df %>%  filter((str_detect(merged_df$genres,"Comedy")) | (str_detect(merged_df$genres,"Action")) |(str_detect(merged_df$genres,"Adventure"))) %>% filter(runtimeMinutes >=30) %>% filter(numVotes >=50)
-
+# Filter merged dataset for analysis 
+merged_df <- merged_df %>%  filter((str_detect(merged_df$genres,"Comedy")) | (str_detect(merged_df$genres,"Action")) |(str_detect(merged_df$genres,"Adventure"))  # Keep movies that belong to at least one of the target genres
+                                   ) %>%  filter(runtimeMinutes >=30 # Exclude very short films
+                                                 ) %>% filter(numVotes >=50) # Keep only movies with enough votes (reliable ratings)
 ```
 
 
