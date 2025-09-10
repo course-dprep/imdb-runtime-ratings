@@ -5,7 +5,7 @@
 
 
 
-# How does runtime influence IMDb ratings, and how is this relationship moderated by genre (Drama, Action and Comedy) when comparing films released before 2015 to those released after 2015?
+# How does runtime influence IMDb ratings, and how is this relationship moderated by genre (Adventure, Action and Comedy) when comparing films released before 2015 to those released after 2015?
 
 
 ## Motivation
@@ -16,12 +16,10 @@ Previous research suggests a significant relationship between movie genres and t
 
 In addition to examining the relationship between runtime, genre, and IMDb ratings, it is also important to define a clear time interval for the research. The global Netflix subscriber data provides a useful benchmark: in early 2013, Netflix had around 30 million paid subscribers, but by 2015 that number had more than doubled to over 70 million. (Netflix, 2025) This rapid acceleration reflects the point at which streaming shifted from an emerging model to a mainstream mode of media consumption, making 2015 a suitable cutoff year. Streaming services mark a natural cutoff point because they changed how runtimes are perceived: before streaming, films were optimized for theatrical showings and ticket sales, while streaming enabled more flexibility in length. As audiences gained on-demand access, tolerance for both shorter and longer runtimes shifted, making streaming adoption a key turning point for analyzing runtime effects on IMDb ratings. Accordingly, the research will compare films released before 2015 with those released from 2015 onward.
 
-Thus, the research question for this project is defined as “How does runtime influence IMDb ratings, and how is this relationship moderated by genre (Drama, Action and Comedy) when comparing films released before 2015 to those released after 2015?”
-This research addresses a gap in the currently existing literature of factors that influence audience reception of movies such as IMDb ratings by investigating how the release year (before 2015 versus post 2015) and genre (Drama, Action and Comedy) have a moderating effect on the relationship between runtime and IMDb ratings of movies. Previous research looked at the individual effects of runtime, release year and genre (Horror, Comedy and Action) on IMDb ratings while this research also looks at the relative effects of these variables and how they interact with each other. 
+Thus, the research question for this project is defined as “How does runtime influence IMDb ratings, and how is this relationship moderated by genre (Adventure, Action and Comedy) when comparing films released before 2015 to those released after 2015?”
+This research addresses a gap in the currently existing literature of factors that influence audience reception of movies such as IMDb ratings by investigating how the release year (before 2015 versus post 2015) and genre (Adventure, Action and Comedy) have a moderating effect on the relationship between runtime and IMDb ratings of movies. Previous research looked at the individual effects of runtime, release year and genre (Horror, Comedy and Action) on IMDb ratings while this research also looks at the relative effects of these variables and how they interact with each other. 
 
 Further, this research is relevant to different marketing stakeholders in the movie industry such as marketing managers of movie studios, streaming platforms and cinemas. By providing valuable insights on the runtime preferences of audiences these can be used for example by movie studios to create movies across different genres with an optimal runtime and by streaming platforms and cinemas to find the optimal marketing strategy to movies of different runtimes and genres. 
-
-test123 123 123
 
 ## Data
 
@@ -30,23 +28,37 @@ test123 123 123
   1) title.basics.tsv.gz (contains unique identifier of the title, the type/format of the title, original title, the release year of a title, TV Series end year, primary runtime of the title, genres)
   2) title.ratings.tsv.gz (contains unique identifier of the title, averageRating and number of votes the title has received)
      
-- How many observations are there in the final dataset? 
+- The final dataset includes 20144 observations. 
 - Include a table of variable description/operstionalisation. 
+
+## Variable Description and Operationalisation
+
+| Variable        | Description                                           | Operationalisation (How it is measured/defined)                   |
+|-----------------|-------------------------------------------------------|-------------------------------------------------------------------|
+| `titleType. `   | Genre of the production (eg.movie, tv series)         | Taken directly from dataset (string)                              |
+| `primaryTitle`  | Movie title                                           | Taken directly from dataset (string)                              |
+| `startYear`     | Year of release                                       | Taken directly from dataset (string)                              |
+| `runtimeMinutes`| Duration of the movie                                 | Taken directly from dataset, minutes (numeric)                    |  
+| `genres`        | Movie genres (e.g. "Comedy, Action")                  | Taken directly from dataset (string), may include multiple genres |
+| `averageRating` | Average rating                                        | Mean user score (scale 1–10) taken directly from dataset          |
+| `numVotes`      | Number of votes                                       | Count of user ratings submitted taken directly from dataset       |
+
+
 
 ## Method
 
 - What methods do you use to answer your research question?
 - Provide justification for why it is the most suitable.
 
-- For this research we will perform a multiple linear regression with interaction terms to find out whether the runtime of a movie (continuous) influences its IMDb rating (continuous) and whether a film’s genre (Comedy, Adventure or Action) (categorical) and the release period (2011-2015 vs. 2016-2020) (categorical) influence this relationship. The runtime is the independent variable, the IMDb rating is the dependent variable and the two moderators are Genre (Comedy vs. Adventure vs. Action) and Release Period (2011-2015 vs. 2016-2020). Further, we will include the number of IMDb votes (expressed as a log-scaled variable) as a control variable since ratings based on more votes are usually more stable and reliable (Xie & Lui, 2013). We have chosen for a multiple linear regression with interaction terms as this is the most suitable way to combine these variable types, a continuous independent and dependent variable and two categorical moderators, into one model.
+- For this research we will perform a multiple linear regression with interaction terms to find ou  t whether the runtime of a movie (continuous) influences its IMDb rating (continuous) and whether a film’s genre (Comedy, Adventure or Action) (categorical) and the release period (2011-2015 vs. 2016-2020) (categorical) influence this relationship. The runtime is the independent variable, the IMDb rating is the dependent variable and the two moderators are Genre (Comedy vs. Adventure vs. Action) and Release Period (2011-2015 vs. 2016-2020). Further, we will include the number of IMDb votes (expressed as a log-scaled variable) as a control variable since ratings based on more votes are usually more stable and reliable (Xie & Lui, 2013). We have chosen for a multiple linear regression with interaction terms as this is the most suitable way to combine these variable types, a continuous independent and dependent variable and two categorical moderators, into one model.
 This will lead to the following model:
-Rating = 0 + 1*Runtime10 + 2*Adventure + 3*Action + 4Yeargroup2016-2020 + 5*(Runtime x Adventure) + 6*(Runtime10 x Action) + 7*(Runtime x Yeargroup2016-2020) + 8*log10(Votes) + , where
+Rating = X_0 + $\beta$1*Runtime10 + $\beta$2*Adventure + $\beta$3*Action + $\beta$4Yeargroup2016-2020 + $\beta$5*(Runtime x Adventure) + $\beta$6*(Runtime10 x Action) + $\beta$7*(Runtime x Yeargroup2016-2020) + $\beta$8*log10(Votes) + $\epsilon$, where
 
-1 = How he effect of +10 minutes runtime on IMDb ratings changes for Comedy movies released in 2011-2015
-4 = How the IMDb ratings change between movies released in 2016-2020 compared to movies released in 2011-2015
-5, 6 = How the effect of +10 minutes runtime on IMDb ratings changes for Adventure and Action movies compared to Comedy movies
-7 = How the effect of +10 minutes runtime on IMDb ratings changes for movies released in 2016-2020 compared to 2011-2015
-8 = How the IMDb ratings change between movies when the number of votes increases by a factor of 10 
+$\beta$1 = How he effect of +10 minutes runtime on IMDb ratings changes for Comedy movies released in 2011-2015
+$\beta$4 = How the IMDb ratings change between movies released in 2016-2020 compared to movies released in 2011-2015
+$\beta$5, $\beta$6 = How the effect of +10 minutes runtime on IMDb ratings changes for Adventure and Action movies compared to Comedy movies
+$\beta$7 = How the effect of +10 minutes runtime on IMDb ratings changes for movies released in 2016-2020 compared to 2011-2015
+$\beta$8 = How the IMDb ratings change between movies when the number of votes increases by a factor of 10 
 
 
 ## Preview of Findings 
@@ -71,4 +83,8 @@ Rating = 0 + 1*Runtime10 + 2*Adventure + 3*Action + 4Yeargroup201
 This project is set up as part of the Master's course [Data Preparation & Workflow Management](https://dprep.hannesdatta.com/) at the [Department of Marketing](https://www.tilburguniversity.edu/about/schools/economics-and-management/organization/departments/marketing), [Tilburg University](https://www.tilburguniversity.edu/), the Netherlands.
 
 The project is implemented by team 7 
-members: Berkay Ustundag - 2044582
+members: 
+- Berkay Ustundag - 2044582
+
+d 
+
