@@ -34,7 +34,7 @@ A variable description / operationalisation table is below.
 
 | Variable        | Description                                           | Operationalisation (How it is measured/defined)                   |
 |-----------------|-------------------------------------------------------|-------------------------------------------------------------------|
-| `titleType. `   | Genre of the production (eg.movie, tv series)         | Taken directly from dataset (string)                              |
+| `titleType. `   | Type of the production (eg.movie, tv series)         | Taken directly from dataset (string)                              |
 | `primaryTitle`  | Movie title                                           | Taken directly from dataset (string)                              |
 | `startYear`     | Year of release                                       | Taken directly from dataset (string)                              |
 | `runtimeMinutes`| Duration of the movie                                 | Taken directly from dataset, minutes (numeric)                    |  
@@ -52,6 +52,15 @@ A variable description / operationalisation table is below.
 | `logVotes`      | Control           |  Derived            | log10(`numVotes`). Interpreted as +1 = 10x more votes                           |
 | `Intercept`     | Derived           |  Model              | Comedy movie, 2011-2015, mean `runtimeMinutes`, mean `logVotes`                 |
 
+To ensure data quality and meaningful analysis, we applied the following filters to the dataset:
+
+1) Runtime filter: We excluded movies with a runtime below 30 minutes.
+
+Rationale: Very short films (e.g., shorts, experimental pieces) are structurally different from feature-length movies, and including them would bias our analysis of how runtime affects ratings.
+
+2) Vote count filter: We excluded movies with fewer than 50 votes.
+
+Rationale: IMDb ratings for movies with very few votes are often unstable and unreliable. Setting a threshold of 50 votes ensures that our dataset contains movies with sufficient audience engagement to provide a more representative measure of audience opinion.
 ## Method
 
 - What methods do you use to answer your research question?
@@ -81,7 +90,7 @@ where:
 
 ## Dependencies 
 
-*Explain any tools or packages that need to be installed to run this workflow.*
+install.packages(c("dplyr","readr","stringr","tidyr","data.table","fs","ggplot2","rmarkdown","knitr"))
 
 ## Running Instructions 
 
