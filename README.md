@@ -28,19 +28,19 @@ Further, this research is relevant to different marketing stakeholders in the mo
   2) title.ratings.tsv.gz (contains unique identifier of the title, averageRating and number of votes the title has received)
      
 - The final dataset includes 20144 observations. 
-- Include a table of variable description/operstionalisation. 
+A variable description / operationalisation table is below.
 
 ## Variable Description and Operationalisation
 
 | Variable        | Description                                           | Operationalisation (How it is measured/defined)                   |
 |-----------------|-------------------------------------------------------|-------------------------------------------------------------------|
-| `titleType. `   | Genre of the production (eg.movie, tv series)         | Taken directly from dataset (string)                              |
+| `titleType. `   | Type of the production (eg.movie, tv series)         | Taken directly from dataset (string)                              |
 | `primaryTitle`  | Movie title                                           | Taken directly from dataset (string)                              |
 | `startYear`     | Year of release                                       | Taken directly from dataset (string)                              |
 | `runtimeMinutes`| Duration of the movie                                 | Taken directly from dataset, minutes (numeric)                    |  
 | `genres`        | Movie genres (e.g. "Comedy, Action")                  | Taken directly from dataset (string), may include multiple genres |
 | `averageRating` | Average rating                                        | Mean user score (scale 1–10) taken directly from dataset          |
-| `numVotes`      | Number of votes                                       | Count of user ratings submitted taken directly from dataset       |
+| `numVotes`      | Number of votes                                       | Count of user ratings submitted taken directly from dataset |
 
 | Variable        | Type              | Source              | Operationalisation (How it is measured/defined)                                 |
 |-----------------|-------------------|---------------------|---------------------------------------------------------------------------------|
@@ -52,6 +52,15 @@ Further, this research is relevant to different marketing stakeholders in the mo
 | `logVotes`      | Control           |  Derived            | log10(`numVotes`). Interpreted as +1 = 10x more votes                           |
 | `Intercept`     | Derived           |  Model              | Comedy movie, 2011-2015, mean `runtimeMinutes`, mean `logVotes`                 |
 
+To ensure data quality and meaningful analysis, we applied the following filters to the dataset:
+
+1) Runtime filter: We excluded movies with a runtime below 30 minutes.
+
+Rationale: Very short films (e.g., shorts, experimental pieces) are structurally different from feature-length movies, and including them would bias our analysis of how runtime affects ratings.
+
+2) Vote count filter: We excluded movies with fewer than 50 votes.
+
+Rationale: IMDb ratings for movies with very few votes are often unstable and unreliable. Setting a threshold of 50 votes ensures that our dataset contains movies with sufficient audience engagement to provide a more representative measure of audience opinion.
 ## Method
 
 - What methods do you use to answer your research question?
@@ -59,10 +68,11 @@ Further, this research is relevant to different marketing stakeholders in the mo
 
 - For this research we will perform a multiple linear regression with interaction terms to find ou  t whether the runtime of a movie (continuous) influences its IMDb rating (continuous) and whether a film’s genre (Comedy, Adventure or Action) (categorical) and the release period (2011-2015 vs. 2016-2020) (categorical) influence this relationship. The runtime is the independent variable, the IMDb rating is the dependent variable and the two moderators are Genre (Comedy vs. Adventure vs. Action) and Release Period (2011-2015 vs. 2016-2020). Further, we will include the number of IMDb votes (expressed as a log-scaled variable) as a control variable since ratings based on more votes are usually more stable and reliable (Xie & Lui, 2013). We have chosen for a multiple linear regression with interaction terms as this is the most suitable way to combine these variable types, a continuous independent and dependent variable and two categorical moderators, into one model.
 This will lead to the following model:
-Rating = X₀ + β₁·Runtime10 + β₂·Adventure + β₃·Action + β₄·Yeargroup<sub>2016–2020</sub> + β₅·(Runtime × Adventure) + β₆·(Runtime10 × Action) + β₇·(Runtime × Yeargroup<sub>2016–2020</sub>) + β₈·log₁₀(Votes) + ϵ  
+Rating = X₀ + β₁·Runtime10 + β₂·Adventure + β₃·Action + β₄·Yeargroup<sub>2016–2020</sub> + β₅·(Runtime10 × Adventure) + β₆·(Runtime10 × Action) + β₇·(Runtime10 × Yeargroup<sub>2016–2020</sub>) + β₈·log₁₀(Votes) + ϵ  
 
 where:  
 - β₁ = How the effect of +10 minutes runtime on IMDb ratings changes for Comedy movies released in 2011–2015  
+- β₂, β₃ = How the effect of +10 minutes runtime on IMDb ratings changes for Adventure and Action movies compared to Comedy movies  
 - β₄ = How the IMDb ratings change between movies released in <sub>2016–2020</sub> compared to movies released in 2011–2015  
 - β₅, β₆ = How the effect of +10 minutes runtime on IMDb ratings changes for Adventure and Action movies compared to Comedy movies  
 - β₇ = How the effect of +10 minutes runtime on IMDb ratings changes for movies released in 2016–2020 compared to 2011–2015  
@@ -80,7 +90,7 @@ where:
 
 ## Dependencies 
 
-*Explain any tools or packages that need to be installed to run this workflow.*
+install.packages(c("dplyr","readr","stringr","tidyr","data.table","fs","ggplot2","rmarkdown","knitr"))
 
 ## Running Instructions 
 
@@ -98,5 +108,4 @@ members:
 - Yaz Ucar - 2153214
 - Victor van Rossum - 2042008
 
-d 
 
