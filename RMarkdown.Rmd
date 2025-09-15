@@ -22,7 +22,7 @@ library(data.table)
 library(R.utils)
 library(stringr)
 
-```
+hp ```
 
 Data Pulling Script
 ```{r}
@@ -133,6 +133,9 @@ ggplot(merged_df, aes(x = averageRating, fill = runtime_missing)) +
        y = "Proportion")
 
 merged_df$log10_numVotes <- log10(merged_df$numVotes)
+
+merged_df <- merged_df %>%
+  mutate(Runtime10 = (runtimeMinutes - mean(runtimeMinutes, na.rm = TRUE)) / 10)
 
 #Statistical test of missing patterns
 chisq.test(table(basics$startYear, basics$runtime_missing))
