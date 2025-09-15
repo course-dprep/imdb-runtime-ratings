@@ -100,7 +100,8 @@ basics_long <- basics %>%
 # Step 2: Collapse to top 10 genres (rest -> "Other")
 basics_long <- basics_long %>%
   mutate(genres = fct_lump(genres, n = 10))
-
+# Merge basics and ratings datasets on the common key "tconst"
+merged_df <- merge(basics, ratings, by = "tconst")
 merged_df$runtime_missing <- is.na(merged_df$runtimeMinutes)
 
 #Run all of the plots at once to view them side by side
