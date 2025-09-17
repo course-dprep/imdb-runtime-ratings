@@ -11,7 +11,7 @@ install.packages("fs")
 install.packages("data.table")
 install.packages("R.utils")
 install.packages("stringr")
-tinytex::install_tinytex()()
+tinytex::install_tinytex()
 install.packages("ggplot2")
 install.packages("forcats")
 install.packages("tidyr")
@@ -155,6 +155,24 @@ merged_df <- merged_df %>%  filter((str_detect(merged_df$genres,"Comedy")) | (st
                                                  ) %>% filter(numVotes >=50) # Keep only movies with enough votes (reliable ratings)
 ```
 
+```{r}
+#  Impute missing runtimes by Genre x YearGroup 
+merged_df <- merged_df %>%
+  mutate(
+    year_group = case_when(
+      startYear >= 2011 & startYear <= 2015 ~ "2011-2015",
+      startYear >= 2016 & startYear <= 2020 ~ "2016-2020"
+    )
+  ) %>%
+  group_by(genres, year_group) %>%
+  mutate(runtimeMinutes = if_else(
+    is.na(runtimeMinutes),
+    median(runtimeMinutes, na.rm = TRUE),
+    runtimeMinutes
+  )) %>%
+  ungroup()
+
+```
 
 
 

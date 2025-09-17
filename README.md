@@ -61,6 +61,16 @@ Rationale: Very short films (e.g., shorts, experimental pieces) are structurally
 2) Vote count filter: We excluded movies with fewer than 50 votes.
 
 Rationale: IMDb ratings for movies with very few votes are often unstable and unreliable. Setting a threshold of 50 votes ensures that our dataset contains movies with sufficient audience engagement to provide a more representative measure of audience opinion.
+
+### Handling Missing Values (Runtime)
+
+During the data preparation phase, we observed that some movies in the IMDb dataset had missing values for runtimeMinutes. Further exploration revealed that these missing values were not randomly distributed: they tended to occur more frequently in certain genres and time periods. Because runtime is our main independent variable, we could not simply drop these movies, as that might bias our analysis.
+
+To address this, we applied a median imputation strategy grouped by genre and release period. Specifically:
+Movies were grouped by genre (Comedy, Action, Adventure) and release year group (2011–2015 vs. 2016–2020).
+Within each group, missing runtimes were replaced with the median runtime of that group. (Median was chosen instead of the mean because it is more robust to outliers.)
+This approach ensures that our dataset remains complete without artificially inflating runtimes or discarding a large number of observations. 
+
 ## Method
 
 - What methods do you use to answer your research question?
