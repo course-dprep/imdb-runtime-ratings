@@ -3,47 +3,52 @@ output:
   pdf_document: default
   html_document: default
 ---
+Necessary Packages
 ```{r}
-
 install.packages("dplyr")
 install.packages("readr")
 install.packages("fs")
 install.packages("data.table")
 install.packages("R.utils")
 install.packages("stringr")
-tinytex::install_tinytex()
 install.packages("ggplot2")
 install.packages("forcats")
 install.packages("tidyr")
+install.packages("tinytex")
 library(dplyr)
 library(readr)
 library(fs)
 library(data.table)
 library(R.utils)
 library(stringr)
-
+library(tinytex)
+library(ggplot2)
+library(forcats)
+library(tidyr)
 ```
 
 Data Pulling Script
 ```{r}
-# Set up base URL and file list
-base_url <- "https://datasets.imdbws.com/"   # Base URL for IMDb datasets
-files <- c("title.basics.tsv.gz", "title.ratings.tsv.gz") # The two datasets we want to download
+base_url <- "https://datasets.imdbws.com/"                 # Base URL for IMDb datasets
+files <- c("title.basics.tsv.gz", "title.ratings.tsv.gz")  # The two datasets we want to download
+
 # Set up output directory 
-out_dir <- "data/imdb" # Folder to store the downloaded files
-dir_create(out_dir) # Create the directory if it doesn't already exist
-# Download IMDb files if not already present locally ---
+out_dir <- "data/imdb"              # Folder to store the downloaded files
+dir_create(out_dir)                 # Create the directory if it doesn't already exist
+
+# Download IMDb files if not already present locally
 for (f in files) {
-  dest <- file.path(out_dir, f)  # Full local path for each file
-  if (!file_exists(dest)) {  # Only download if file is missing
-    download.file(paste0(base_url, f), # Construct the full URL
-    destfile = dest,  # Where to save it locally
-    mode = "wb", # Write in binary mode (important for .gz files)
-    quiet = TRUE) # Suppress download messages
+  dest <- file.path(out_dir, f)           # Full local path for each file
+  if (!file_exists(dest)) {               # Only download if file is missing
+    download.file(paste0(base_url, f),    # Construct the full URL
+    destfile = dest,                      # Where to save it locally
+    mode = "wb",                          # Write in binary mode (important for .gz files)
+    quiet = TRUE)                         # Suppress download messages
 
   }
 }
-# Load IMDb datasets into R 
+
+# Load IMDb datasets into R
 # fread() from data.table is used for fast reading of large .tsv files
 
 basics   <- fread(file.path(out_dir, "title.basics.tsv.gz"),
@@ -57,28 +62,34 @@ summary(ratings)
 summary(basics)
 str(ratings)
 str(basics)
+
 # Convert columns stored as character to numeric for easier analysis
 basics$startYear <- as.numeric(basics$startYear)
 basics$runtimeMinutes <- as.numeric(basics$runtimeMinutes)
 ```
 
+Selecting Only Relevant Columns from DataSet
+```{r}
 
-```{r}
-# Select only the relevant columns from basics dataset
-basics <- basics %>% select(tconst, # Unique title identifier (key for merging)
-                            titleType,  # Type of the title (movie, short, tvSeries, etc.)
-                            primaryTitle, # Main title
-                            startYear,  # Release year
-                            runtimeMinutes, # Duration in minutes
-                            genres # List of genres
-)%>% filter(titleType =="movie", # Keep only feature films
-                             startYear >= 2011, startYear <= 2020) #, # Released from 2011 onwards up to 2020
-                             #!is.na(runtimeMinutes)) # Exclude entries with missing runtime
+basics <- basics %>%
+  select(
+    tconst,           # Unique title identifier (key for merging)
+    titleType,        # Type of the title (movie, short, tvSeries, etc.)
+    primaryTitle,     # Main title
+    startYear,        # Release year
+    runtimeMinutes,   # Duration in minutes
+    genres            # List of genres
+  ) %>%
+  filter(
+    titleType == "movie",          # Keep only feature films
+    startYear >= 2011,             # Released from 2011 onwards
+    startYear <= 2020              # Up to 2020
+  )
 ```
-Checking Missing Values
+
+Checking Missing Values and Their Randomness
 ```{r}
-#Count how many NAs there are
-sum(is.na(basics$runtimeMinutes))
+sum(is.na(basics$runtimeMinutes))   #Count how many NAs there are
 mean(is.na(basics$runtimeMinutes))  # proportion of missing values
 
 #Compare distributions (movies with vs. without runtimeMinutes)
@@ -90,8 +101,7 @@ library(ggplot2)
 library(forcats)
 library(tidyr)
 
-
-#Check if NAs are related to popularity (ratings dataset)
+# Check if NAs are related to popularity (ratings dataset)
 # Step 1: Split multi-genre strings into separate rows
 basics_long <- basics %>%
   separate_rows(genres, sep = ",") %>%
@@ -100,9 +110,10 @@ basics_long <- basics %>%
 # Step 2: Collapse to top 10 genres (rest -> "Other")
 basics_long <- basics_long %>%
   mutate(genres = fct_lump(genres, n = 10))
+
 # Merge basics and ratings datasets on the common key "tconst"
 merged_df <- merge(basics, ratings, by = "tconst")
-merged_df$runtime_missing <- is.na(merged_df$runtimeMinutes)
+merged_df$runtime_missing <- is.na(merged_df$runtimeMinutes) #New column called runtime_missing
 
 #Run all of the plots at once to view them side by side
 
@@ -145,16 +156,18 @@ chisq.test(table(basics_long$genres, basics_long$runtime_missing))
 
 ```
 
-
+Filtering 3 Selected Genres, RunTime and Number of Votes
 ```{r}
-# Merge basics and ratings datasets on the common key "tconst"
-merged_df <- merge(basics, ratings, by = "tconst")
-# Filter merged dataset for analysis 
-merged_df <- merged_df %>%  filter((str_detect(merged_df$genres,"Comedy")) | (str_detect(merged_df$genres,"Action")) |(str_detect(merged_df$genres,"Adventure"))  # Keep movies that belong to at least one of the target genres
-                                   ) %>%  filter(runtimeMinutes >=30 # Exclude very short films
-                                                 ) %>% filter(numVotes >=50) # Keep only movies with enough votes (reliable ratings)
+merged_df <- merged_df %>%
+  filter(str_detect(genres, "Comedy") |
+         str_detect(genres, "Action") |
+         str_detect(genres, "Adventure")) %>%
+  filter(is.na(runtimeMinutes) |
+           runtimeMinutes >= 30) %>%           # Keep NA run times, exclude very short films
+  filter(numVotes >= 50)                       # Keep NA and films with few votes
 ```
 
+Generating Values for NA RunTimes
 ```{r}
 #  Impute missing runtimes by Genre x YearGroup 
 merged_df <- merged_df %>%
