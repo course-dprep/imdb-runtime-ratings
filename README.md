@@ -1,10 +1,3 @@
-> **Important:** This is a template repository to help you set up your team project.  
->  
-> You are free to modify it based on your needs. For example, if your data is downloaded using *multiple* scripts instead of a single one (as shown in `\data\`), structure the code accordingly. The same applies to all other starter files—adapt or remove them as needed.  
->  
-
-
-
 # How does runtime influence IMDb ratings, and how is this relationship moderated by genre (Adventure, Action and Comedy) when comparing films released before 2015 to those released after 2015?
 
 
@@ -99,6 +92,7 @@ where:
 **Include a tree diagram that illustrates the repository structure*
 
 ## Dependencies 
+The following packages are necessary: 
 
 install.packages(c("dplyr","readr","stringr","tidyr","data.table","fs","ggplot2","rmarkdown","knitr"))
 
