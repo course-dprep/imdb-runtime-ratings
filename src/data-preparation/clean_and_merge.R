@@ -9,11 +9,71 @@ library(ggplot2)
 library(forcats)
 library(tidyr)
 
+###MODIFYING and SELECTING COLUMNS
+
 # Convert columns stored as character to numeric for easier analysis
 basics$startYear <- as.numeric(basics$startYear)
 basics$runtimeMinutes <- as.numeric(basics$runtimeMinutes)
 
-# Merge basics and ratings datasets on the common key "tconst"
-merged_df <- merge(basics, ratings, by = "tconst")
-merged_df$runtime_missing <- is.na(merged_df$runtimeMinutes) #New column called runtime_missing
+# Selecting Only Relevant Columns from DataSet
+basics <- basics %>%
+  select(
+    tconst,           # Unique title identifier (key for merging)
+    titleType,        # Type of the title (movie, short, tvSeries, etc.)
+    primaryTitle,     # Main title
+    startYear,        # Release year
+    runtimeMinutes,   # Duration in minutes
+    genres            # List of genres
+  ) %>%
+  filter(
+    titleType == "movie",          # Keep only feature films
+    startYear >= 2011,             # Released from 2011 onwards
+    startYear <= 2020              # Up to 2020
+  )
 
+###MERGING TWO DATASETS and CLEANING
+
+merged_df <- merge(basics, ratings, by = "tconst")
+
+# Creating New Columns for Better Analysis
+merged_df <- merged_df %>%
+  mutate(
+    runtime_missing = is.na(runtimeMinutes),
+    log10_numVotes = log10(numVotes)
+  )
+
+# Filtering 3 Selected Genres, RunTime and Number of Votes
+merged_df <- merged_df %>%
+  filter(str_detect(genres, "Comedy") |
+           str_detect(genres, "Action") |
+           str_detect(genres, "Adventure")) %>%
+  filter(is.na(runtimeMinutes) |
+           runtimeMinutes >= 30) %>%           # Keep NA run times, exclude very short films
+  filter(numVotes >= 50)                       # Keep NA and films with few votes
+
+# Impute missing runtimes by Genre x YearGroup and Create RunTime Imputed Column
+merged_df <- merged_df %>%
+  mutate(
+    year_group = case_when(
+      startYear >= 2011 & startYear <= 2015 ~ "2011-2015",
+      startYear >= 2016 & startYear <= 2020 ~ "2016-2020"
+    )
+  ) %>%
+  group_by(genres, year_group) %>%
+  mutate(runtimeMinutes_imputed = if_else(
+    is.na(runtimeMinutes),
+    median(runtimeMinutes, na.rm = TRUE),
+    runtimeMinutes
+  )) %>%
+  ungroup()
+
+# Compute RunTime 10 for Analysis and Remove RunTime Column
+merged_df <- merged_df %>%
+  mutate(Runtime10 = (runtimeMinutes_imputed - mean(runtimeMinutes_imputed, na.rm = TRUE)) / 10)
+
+merged_df <- merged_df %>%
+  select(-runtimeMinutes)
+
+###SAVING FINAL MERGED DATASET FOR ANALYSIS
+
+write_csv(merged_df, "final_dataset.csv")
