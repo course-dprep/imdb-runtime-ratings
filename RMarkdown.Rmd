@@ -189,7 +189,29 @@ merged_df <- merged_df %>%
 
 Data Analysis
 ```{r}
+library(dplyr)
+library(tidyverse)
+library(stringr)
 
+# Collapse to one of the 3 target genres (Comedy = reference)
+model_df <- merged_df %>%
+  mutate(
+    Genre = case_when(
+      str_detect(genres, "Comedy")    ~ "Comedy",
+      str_detect(genres, "Adventure") ~ "Adventure",
+      str_detect(genres, "Action")    ~ "Action",
+      TRUE                            ~ NA_character_
+    ),
+    Genre = factor(Genre, levels = c("Comedy","Adventure","Action")),
+    YearGroup = factor(case_when(
+      startYear >= 2011 & startYear <= 2015 ~ "2011-2015",
+      startYear >= 2016 & startYear <= 2020 ~ "2016-2020",
+      TRUE ~ NA_character_
+    ), levels = c("2011-2015","2016-2020")),
+    logVotes = log10(numVotes),
+    Runtime10 = (runtimeMinutes - mean(runtimeMinutes, na.rm = TRUE)) / 10
+  ) %>%
+  filter(!is.na(Genre), !is.na(YearGroup), !is.na(runtimeMinutes))
 
 ```
 
