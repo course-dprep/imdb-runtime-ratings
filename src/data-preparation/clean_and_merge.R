@@ -1,13 +1,3 @@
-install.packages("dplyr")
-install.packages("readr")
-install.packages("fs")
-install.packages("data.table")
-install.packages("R.utils")
-install.packages("stringr")
-install.packages("ggplot2")
-install.packages("forcats")
-install.packages("tidyr")
-install.packages("tinytex")
 library(dplyr)
 library(readr)
 library(fs)
@@ -18,3 +8,12 @@ library(tinytex)
 library(ggplot2)
 library(forcats)
 library(tidyr)
+
+# Convert columns stored as character to numeric for easier analysis
+basics$startYear <- as.numeric(basics$startYear)
+basics$runtimeMinutes <- as.numeric(basics$runtimeMinutes)
+
+# Merge basics and ratings datasets on the common key "tconst"
+merged_df <- merge(basics, ratings, by = "tconst")
+merged_df$runtime_missing <- is.na(merged_df$runtimeMinutes) #New column called runtime_missing
+
