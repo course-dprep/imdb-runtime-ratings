@@ -1,13 +1,9 @@
+###REQUIRED PACKAGES
+install.packages("stringr")
+install.packages("readr")
 library(dplyr)
-library(readr)
-library(fs)
-library(data.table)
-library(R.utils)
 library(stringr)
-library(tinytex)
-library(ggplot2)
-library(forcats)
-library(tidyr)
+library(readr)
 
 ###MODIFYING and SELECTING COLUMNS
 
@@ -70,9 +66,6 @@ merged_df <- merged_df %>%
 # Compute RunTime 10 for Analysis and Remove RunTime Column
 merged_df <- merged_df %>%
   mutate(Runtime10 = (runtimeMinutes_imputed - mean(runtimeMinutes_imputed, na.rm = TRUE)) / 10)
-
-merged_df <- merged_df %>%
-  select(-runtimeMinutes)
 
 ###SAVING FINAL MERGED DATASET FOR ANALYSIS
 
