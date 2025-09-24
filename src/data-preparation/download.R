@@ -1,3 +1,6 @@
+# Set CRAN mirror
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+
 ###REQUIRED PACKAGES 
 install.packages("fs")
 install.packages("data.table")
@@ -32,3 +35,6 @@ basics   <- fread(file.path(out_dir, "title.basics.tsv.gz"),
                   sep = "\t", na.strings = "\\N", quote = "")
 ratings  <- fread(file.path(out_dir, "title.ratings.tsv.gz"),
                   sep = "\t", na.strings = "\\N", quote = "")
+
+write.csv(basics, "basics.csv", row.names = FALSE)
+write.csv(ratings, "ratings.csv", row.names = FALSE)

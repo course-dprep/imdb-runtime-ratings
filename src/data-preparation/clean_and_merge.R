@@ -1,3 +1,7 @@
+# Set CRAN mirror
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+
+
 ###REQUIRED PACKAGES
 install.packages("stringr")
 install.packages("readr")
@@ -6,6 +10,9 @@ library(stringr)
 library(readr)
 
 ###MODIFYING and SELECTING COLUMNS
+
+basics <- read.csv("basics.csv")
+ratings <- read.csv("ratings.csv")
 
 # Convert columns stored as character to numeric for easier analysis
 basics$startYear <- as.numeric(basics$startYear)
@@ -74,4 +81,4 @@ merged_df <- merged_df %>%
 
 ###SAVING FINAL MERGED DATASET FOR ANALYSIS
 
-write_csv(merged_df, "final_dataset.csv")
+write.csv(merged_df, "final_dataset.csv", row.names = FALSE)

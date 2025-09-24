@@ -1,3 +1,6 @@
+# Set CRAN mirror
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+
 ###REQUIRED PACKAGES
 
 install.packages("dplyr")
@@ -9,6 +12,10 @@ library(dplyr)
 library(tidyr)
 library(forcats)
 library(ggplot2)
+
+basics <- read.csv("basics.csv")
+ratings <- read.csv("ratings.csv")
+merged_df <- read.csv("final_dataset.csv")
 
 ###SUMMARY STATISTICS
 
