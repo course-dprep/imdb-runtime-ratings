@@ -1,25 +1,8 @@
-###INSTALLING NECESSARY PACKAGES 
-
-install.packages("dplyr")
-install.packages("readr")
+###REQUIRED PACKAGES 
 install.packages("fs")
 install.packages("data.table")
-install.packages("R.utils")
-install.packages("stringr")
-install.packages("ggplot2")
-install.packages("forcats")
-install.packages("tidyr")
-install.packages("tinytex")
-library(dplyr)
-library(readr)
 library(fs)
 library(data.table)
-library(R.utils)
-library(stringr)
-library(tinytex)
-library(ggplot2)
-library(forcats)
-library(tidyr)
 
 ###DATA PULLING SCRIPT
 

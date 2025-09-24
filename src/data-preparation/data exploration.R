@@ -1,15 +1,14 @@
-### REQUIRED PACKAGES
+###REQUIRED PACKAGES
+
+install.packages("dplyr")
+install.packages("tidyr")
+install.packages("forcats")
+install.packages("ggplot2")
 
 library(dplyr)
-library(readr)
-library(fs)
-library(data.table)
-library(R.utils)
-library(stringr)
-library(tinytex)
-library(ggplot2)
-library(forcats)
 library(tidyr)
+library(forcats)
+library(ggplot2)
 
 ###SUMMARY STATISTICS
 
