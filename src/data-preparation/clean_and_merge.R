@@ -39,13 +39,18 @@ merged_df <- merged_df %>%
   )
 
 # Filtering 3 Selected Genres, RunTime and Number of Votes
+
 merged_df <- merged_df %>%
-  filter(str_detect(genres, "Comedy") |
-           str_detect(genres, "Action") |
-           str_detect(genres, "Adventure")) %>%
+  filter(str_detect(genres, "Comedy|Adventure|Action")) %>%
   filter(is.na(runtimeMinutes) |
-           runtimeMinutes >= 30) %>%           # Keep NA run times, exclude very short films
-  filter(numVotes >= 50)                       # Keep NA and films with few votes
+           runtimeMinutes >= 30) %>%      # Keep NA run times, exclude very short films
+  filter(numVotes >= 50) %>%              # Keep NA and films with few votes
+  
+  # Take the FIRST occurrence of one of the target genres in the string
+  mutate(
+    Genre = str_extract(genres, "Comedy|Adventure|Action"),
+    Genre = factor(Genre, levels = c("Comedy","Adventure","Action")))
+
 
 # Impute missing runtimes by Genre x YearGroup and Create RunTime Imputed Column
 merged_df <- merged_df %>%
