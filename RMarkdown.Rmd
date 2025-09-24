@@ -187,6 +187,7 @@ merged_df <- merged_df %>%
 
 ```
 
+
 ## Descriptive analyses
 
 ```{r}
@@ -335,8 +336,6 @@ merged_df %>%
     mean_runtime = mean(runtimeMinutes, na.rm = TRUE)
   ) 
 ```
-
-
 
 
 
