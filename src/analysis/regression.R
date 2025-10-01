@@ -6,13 +6,18 @@ options(repos = c(CRAN = "https://cloud.r-project.org"))
 install.packages("sandwich")
 install.packages("lmtest")
 install.packages("car")
+install.packages("scales")
+install.packages("knitr")
 library(dplyr)
 library(tidyverse)
 library(stringr)
 library(sandwich)
 library(lmtest)
 library(car)
+library(scales)
+library(knitr)
 
+## Regression Analysis
 # Model: Rating ~ Runtime10 * Genre + Runtime10 * YearGroup + logVotes
 # modeling helpers
 mutate(
@@ -46,15 +51,12 @@ beta8 <- coef(model)[["logVotes"]]
 round(c(beta1=beta1,beta2=beta2,beta3=beta3,beta4=beta4,beta5=beta5,beta6=beta6,beta7=beta7,beta8=beta8), 3)
 
 #Checking Assumptions and Providing Fixes if Necessary
-library(car)
 model_df$residuals_lm <- resid(model)
 
 leveneTest(residuals_lm ~ Genre*YearGroup, data = model_df, center = mean)
 
 if (!requireNamespace("sandwich", quietly = TRUE)) install.packages("sandwich")
 if (!requireNamespace("lmtest", quietly = TRUE)) install.packages("lmtest")
-library(sandwich)
-library(lmtest)
 
 # HC3 is a common choice
 robust_se <- vcovHC(model, type = "HC3")
@@ -67,5 +69,124 @@ ks.test(model$residuals, "pnorm",
 # Shapiro–Wilk (note: with large n it almost always rejects)
 shapiro.test(sample(model$residuals, size = min(5000, length(model$residuals))))
 
-library(car)
 vif(model)
+
+## Descriptive analyses
+
+# Number of films per year
+merged_df %>%
+  count(startYear) %>%
+  ggplot(aes(x = startYear, y = n)) +
+  geom_col(fill = "steelblue") +
+  scale_x_continuous(labels = number_format(accuracy = 1)) +
+  labs(title = "Number of Films per Year (2011–2020)",
+       x = "Year", y = "Number of Films")
+
+# Average rating per year
+merged_df %>%
+  group_by(startYear) %>%
+  summarise(mean_rating = mean(averageRating, na.rm = TRUE)) %>%
+  ggplot(aes(x = startYear, y = mean_rating)) +
+  geom_line(color = "darkred", size = 1) +
+  scale_x_continuous(labels = number_format(accuracy = 1)) +
+  labs(title = "Average IMDb Rating per Year",
+       x = "Year", y = "Average Rating")
+
+# Distribution of ratings
+merged_df %>%
+  ggplot(aes(x = averageRating)) +
+  geom_histogram(binwidth = 0.2, fill = "goldenrod", color = "white") +
+  labs(title = "Distribution of IMDb Ratings",
+       x = "Rating", y = "Number of Films")
+
+# Average rating per genre
+merged_df %>%
+  separate_rows(genres, sep = ",") %>%
+  filter(genres %in% c("Action","Comedy","Adventure")) %>%
+  group_by(genres) %>%
+  summarise(mean_rating = mean(averageRating, na.rm = TRUE)) %>%
+  ggplot(aes(x = reorder(genres, -mean_rating), y = mean_rating, fill = genres)) +
+  geom_col() +
+  labs(title = "Average IMDb Rating by Genre",
+       x = "Genre", y = "Average Rating")
+
+# Distribution of votes (log scale)
+merged_df %>%
+  ggplot(aes(x = numVotes)) +
+  geom_histogram(bins = 50, fill = "steelblue", color = "white") +
+  scale_x_log10() +
+  labs(title = "Distribution of Number of Votes (log scale)",
+       x = "Number of Votes (log10)", y = "Number of Films")
+
+# Average number of votes per genre
+merged_df %>%
+  separate_rows(genres, sep = ",") %>%
+  filter(genres %in% c("Action","Comedy","Adventure")) %>%
+  group_by(genres) %>%
+  summarise(mean_votes = mean(numVotes, na.rm = TRUE)) %>%
+  ggplot(aes(x = reorder(genres, -mean_votes), y = mean_votes, fill = genres)) +
+  geom_col() +
+  labs(title = "Average Number of Votes by Genre",
+       x = "Genre", y = "Average Votes")
+
+# Distribution of runtimes
+merged_df %>%
+  ggplot(aes(x = runtimeMinutes)) +
+  geom_histogram(binwidth = 10, fill = "darkgreen", color = "white") +
+  labs(title = "Distribution of Runtimes",
+       x = "Runtime (minutes)", y = "Number of Films")
+
+# Average runtime per year
+merged_df %>%
+  group_by(startYear) %>%
+  summarise(mean_runtime = mean(runtimeMinutes, na.rm = TRUE)) %>%
+  ggplot(aes(x = startYear, y = mean_runtime)) +
+  geom_line(color = "darkblue", size = 1) +
+  scale_x_continuous(labels = number_format(accuracy = 1)) +
+  labs(title = "Average Runtime per Year",
+       x = "Year", y = "Runtime (minutes)")
+
+# Runtime distribution by genre
+merged_df %>%
+  separate_rows(genres, sep = ",") %>%
+  filter(genres %in% c("Action", "Comedy", "Adventure")) %>%
+  ggplot(aes(x = genres, y = runtimeMinutes, fill = genres)) +
+  geom_boxplot() +
+  labs(title = "Runtime Distribution by Genre",
+       x = "Genre", y = "Runtime (minutes)")
+
+# Heatmap: Average rating per genre per year
+merged_df %>%
+  separate_rows(genres, sep = ",") %>%
+  filter(genres %in% c("Action","Comedy","Adventure")) %>%
+  group_by(startYear, genres) %>%
+  summarise(mean_rating = mean(averageRating, na.rm = TRUE)) %>%
+  ggplot(aes(x = startYear, y = genres, fill = mean_rating)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "lightyellow", high = "red") +
+  scale_x_continuous(labels = number_format(accuracy = 1)) +
+  labs(title = "Average IMDb Rating per Genre per Year",
+       x = "Year", y = "Genre", fill = "Average Rating")
+
+# Summary by genre
+merged_df %>%
+  separate_rows(genres, sep = ",") %>%
+  filter(genres %in% c("Action","Comedy","Adventure")) %>%
+  group_by(genres) %>%
+  summarise(
+    n_films = n(),
+    mean_rating = mean(averageRating, na.rm = TRUE),
+    sd_rating = sd(averageRating, na.rm = TRUE),
+    mean_votes = mean(numVotes, na.rm = TRUE),
+    mean_runtime = mean(runtimeMinutes, na.rm = TRUE)
+  )
+
+# Summary by year
+merged_df %>%
+  group_by(startYear) %>%
+  summarise(
+    n_films = n(),
+    mean_rating = mean(averageRating, na.rm = TRUE),
+    mean_votes = mean(numVotes, na.rm = TRUE),
+    mean_runtime = mean(runtimeMinutes, na.rm = TRUE)
+  ) 
