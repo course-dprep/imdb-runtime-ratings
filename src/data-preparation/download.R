@@ -13,7 +13,7 @@ base_url <- "https://datasets.imdbws.com/"                 # Base URL for IMDb d
 files <- c("title.basics.tsv.gz", "title.ratings.tsv.gz")  # The two datasets we want to download
 
 # Set up output directory 
-out_dir <- "data/imdb"              # Folder to store the downloaded files
+out_dir <- "gen-data"               # Folder to store the downloaded files
 dir_create(out_dir)                 # Create the directory if it doesn't already exist
 
 # Download IMDb files if not already present locally
@@ -38,3 +38,5 @@ ratings  <- fread(file.path(out_dir, "title.ratings.tsv.gz"),
 
 write.csv(basics, file.path(out_dir, "basics.csv"), row.names = FALSE)
 write.csv(ratings, file.path(out_dir, "ratings.csv"), row.names = FALSE)
+
+message("Data preparation complete. Files saved in folder: ", out_dir)
