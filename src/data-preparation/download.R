@@ -36,5 +36,5 @@ basics   <- fread(file.path(out_dir, "title.basics.tsv.gz"),
 ratings  <- fread(file.path(out_dir, "title.ratings.tsv.gz"),
                   sep = "\t", na.strings = "\\N", quote = "")
 
-write.csv(basics, "basics.csv", row.names = FALSE)
-write.csv(ratings, "ratings.csv", row.names = FALSE)
+write.csv(basics, file.path(out_dir, "basics.csv"), row.names = FALSE)
+write.csv(ratings, file.path(out_dir, "ratings.csv"), row.names = FALSE)
