@@ -1,0 +1,71 @@
+# Set CRAN mirror
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+
+
+###REQUIRED PACKAGES
+install.packages("sandwich")
+install.packages("lmtest")
+install.packages("car")
+library(dplyr)
+library(tidyverse)
+library(stringr)
+library(sandwich)
+library(lmtest)
+library(car)
+
+# Model: Rating ~ Runtime10 * Genre + Runtime10 * YearGroup + logVotes
+# modeling helpers
+mutate(
+  logVotes  = log10(numVotes),
+  Runtime10 = (runtimeMinutes - mean(runtimeMinutes, na.rm = TRUE)) / 10
+)
+
+model <- lm(averageRating ~ Runtime10*Genre + Runtime10*YearGroup + logVotes,
+            data = merged_df)
+summary(model)
+# β1: slope of Runtime10 for the reference group (Comedy, 2011–2015)
+beta1 <- coef(model)[["Runtime10"]]
+
+# Genre interactions change the slope relative to Comedy:
+# β5 (Runtime10 × Adventure), β6 (Runtime10 × Action)
+beta5 <- coef(model)[["Runtime10:GenreAdventure"]]
+beta6 <- coef(model)[["Runtime10:GenreAction"]]
+
+# Year interaction changes the slope for 2016–2020 vs 2011–2015: β7
+beta7 <- coef(model)[["Runtime10:YearGroup2016-2020"]]
+
+# Main effects:
+# β2, β3 (genre level shifts vs Comedy), β4 (2016–2020 shift vs 2011–2015)
+beta2 <- coef(model)[["GenreAdventure"]]
+beta3 <- coef(model)[["GenreAction"]]
+beta4 <- coef(model)[["YearGroup2016-2020"]]
+
+# Control: β8 (effect of a 10x increase in votes)
+beta8 <- coef(model)[["logVotes"]]
+
+round(c(beta1=beta1,beta2=beta2,beta3=beta3,beta4=beta4,beta5=beta5,beta6=beta6,beta7=beta7,beta8=beta8), 3)
+
+#Checking Assumptions and Providing Fixes if Necessary
+library(car)
+model_df$residuals_lm <- resid(model)
+
+leveneTest(residuals_lm ~ Genre*YearGroup, data = model_df, center = mean)
+
+if (!requireNamespace("sandwich", quietly = TRUE)) install.packages("sandwich")
+if (!requireNamespace("lmtest", quietly = TRUE)) install.packages("lmtest")
+library(sandwich)
+library(lmtest)
+
+# HC3 is a common choice
+robust_se <- vcovHC(model, type = "HC3")
+coeftest(model, vcov = robust_se)
+
+ks.test(model$residuals, "pnorm",
+        mean = mean(model$residuals),
+        sd   = sd(model$residuals))
+
+# Shapiro–Wilk (note: with large n it almost always rejects)
+shapiro.test(sample(model$residuals, size = min(5000, length(model$residuals))))
+
+library(car)
+vif(model)
