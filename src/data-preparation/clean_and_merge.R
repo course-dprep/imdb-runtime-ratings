@@ -8,9 +8,10 @@ install.packages("readr")
 library(dplyr)
 library(stringr)
 library(readr)
+library(here)
 
-basics  <- read.csv("gen-data/basics.csv")
-ratings <- read.csv("gen-data/ratings.csv")
+basics  <- read.csv(here("gen-data", "basics.csv"))
+ratings <- read.csv(here("gen-data", "ratings.csv"))
 
 # Convert columns stored as character to numeric for easier analysis
 basics$startYear <- as.numeric(basics$startYear)
@@ -79,4 +80,4 @@ merged_df <- merged_df %>%
 
 ###SAVING FINAL MERGED DATASET FOR ANALYSIS
 
-write.csv(merged_df, "gen-data/final_dataset.csv", row.names = FALSE)
+write.csv(merged_df, here("gen-data", "final_dataset.csv"), row.names = FALSE)
