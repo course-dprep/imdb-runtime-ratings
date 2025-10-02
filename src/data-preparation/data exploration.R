@@ -12,10 +12,11 @@ library(dplyr)
 library(tidyr)
 library(forcats)
 library(ggplot2)
+library(here)
 
-basics <- read.csv("basics.csv")
-ratings <- read.csv("ratings.csv")
-merged_df <- read.csv("final_dataset.csv")
+basics    <- read.csv(here("gen-data", "basics.csv"))
+ratings   <- read.csv(here("gen-data", "ratings.csv"))
+merged_df <- read.csv(here("gen-data", "final_dataset.csv"))
 
 ###SUMMARY STATISTICS
 
