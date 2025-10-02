@@ -15,7 +15,7 @@ files <- c("title.basics.tsv.gz", "title.ratings.tsv.gz")  # The two datasets we
 
 # Set up output directory           
 
-out_dir <- here("gen-data" )              # Folder to store the downloaded files
+out_dir <- here("gen_data" )              # Folder to store the downloaded files
 
 dir_create(out_dir)                 # Create the directory if it doesn't already exist
 

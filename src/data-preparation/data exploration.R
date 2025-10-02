@@ -14,9 +14,9 @@ library(forcats)
 library(ggplot2)
 library(here)
 
-basics    <- read.csv(here("gen-data", "basics.csv"))
-ratings   <- read.csv(here("gen-data", "ratings.csv"))
-merged_df <- read.csv(here("gen-data", "final_dataset.csv"))
+basics    <- read.csv(here("gen_data", "basics.csv"))
+ratings   <- read.csv(here("gen_data", "ratings.csv"))
+merged_df <- read.csv(here("gen_data", "final_dataset.csv"))
 
 ###SUMMARY STATISTICS
 
