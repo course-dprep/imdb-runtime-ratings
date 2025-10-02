@@ -20,12 +20,18 @@ library(knitr)
 ## Regression Analysis
 # Model: Rating ~ Runtime10 * Genre + Runtime10 * YearGroup + logVotes
 # modeling helpers
-mutate(
+merged_df <- merged_df %>% mutate(
   logVotes  = log10(numVotes),
   Runtime10 = (runtimeMinutes - mean(runtimeMinutes, na.rm = TRUE)) / 10
 )
 
-model <- lm(averageRating ~ Runtime10*Genre + Runtime10*YearGroup + logVotes,
+merged_df <- merged_df %>%
+  mutate(
+    Genre      = factor(Genre, levels = c("Comedy","Adventure","Action")),  # baseline = Comedy
+    year_group = factor(year_group, levels = c("2011-2015","2016-2020"))    # baseline = 2011–2015
+  )
+
+model <- lm(averageRating ~ Runtime10*Genre + Runtime10*year_group + logVotes,
             data = merged_df)
 summary(model)
 # β1: slope of Runtime10 for the reference group (Comedy, 2011–2015)
@@ -37,13 +43,13 @@ beta5 <- coef(model)[["Runtime10:GenreAdventure"]]
 beta6 <- coef(model)[["Runtime10:GenreAction"]]
 
 # Year interaction changes the slope for 2016–2020 vs 2011–2015: β7
-beta7 <- coef(model)[["Runtime10:YearGroup2016-2020"]]
+beta7 <- coef(model)[["Runtime10:year_group2016-2020"]]
 
 # Main effects:
 # β2, β3 (genre level shifts vs Comedy), β4 (2016–2020 shift vs 2011–2015)
 beta2 <- coef(model)[["GenreAdventure"]]
 beta3 <- coef(model)[["GenreAction"]]
-beta4 <- coef(model)[["YearGroup2016-2020"]]
+beta4 <- coef(model)[["year_group2016-2020"]]
 
 # Control: β8 (effect of a 10x increase in votes)
 beta8 <- coef(model)[["logVotes"]]
