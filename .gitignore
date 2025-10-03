@@ -1,19 +1,27 @@
 # Use this file to keep certain files from being versioned (covered in the GitHub part of the course).
+# OS / RStudio junk
 .DS_Store
 .Rproj.user
-data/
-*.tsv.gz
-*.zip
-*.parquet
-data/
-*.tsv.gz
-*.zip
-*.parquet
-data/
-*.tsv.gz
-*.zip
-*.parquet
 .Rhistory
-gen/output/
-*.png
+
+# --- DATA: ignore contents but keep the folder visible ---
+data/*
+!data/.gitignore
+
+# If you still want to ignore these anywhere else in the repo:
+*.tsv.gz
+*.zip
+*.parquet
 *.csv
+*.png
+
+# --- GEN: ignore outputs but keep the folders visible ---
+gen/*
+!gen/.gitignore
+
+# Keep subfolders but ignore their contents (optional, if you use them)
+gen/output/*
+!gen/output/.gitignore
+gen/temp/*
+!gen/temp/.gitignore
+
