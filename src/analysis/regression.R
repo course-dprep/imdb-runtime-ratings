@@ -57,9 +57,9 @@ beta8 <- coef(model)[["logVotes"]]
 round(c(beta1=beta1,beta2=beta2,beta3=beta3,beta4=beta4,beta5=beta5,beta6=beta6,beta7=beta7,beta8=beta8), 3)
 
 #Checking Assumptions and Providing Fixes if Necessary
-model_df$residuals_lm <- resid(model)
+merged_df$residuals_lm <- resid(model)
 
-leveneTest(residuals_lm ~ Genre*YearGroup, data = model_df, center = mean)
+leveneTest(residuals_lm ~ Genre*YearGroup, data = merged_df, center = mean)
 
 if (!requireNamespace("sandwich", quietly = TRUE)) install.packages("sandwich")
 if (!requireNamespace("lmtest", quietly = TRUE)) install.packages("lmtest")
