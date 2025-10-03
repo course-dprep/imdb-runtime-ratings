@@ -15,7 +15,7 @@ files <- c("title.basics.tsv.gz", "title.ratings.tsv.gz")  # The two datasets we
 
 # Set up output directory           
 
-out_dir <- here("gen_data" )              # Folder to store the downloaded files
+out_dir <- here("data" )              # Folder to store the downloaded files
 
 dir_create(out_dir)                 # Create the directory if it doesn't already exist
 
@@ -39,7 +39,7 @@ basics   <- fread(file.path(out_dir, "title.basics.tsv.gz"),
 ratings  <- fread(file.path(out_dir, "title.ratings.tsv.gz"),
                   sep = "\t", na.strings = "\\N", quote = "")
 
-write.csv(basics, file.path(out_dir, "basics.csv"), row.names = FALSE)
-write.csv(ratings, file.path(out_dir, "ratings.csv"), row.names = FALSE)
+write.csv(basics, file.path("gen/temp", "basics.csv"), row.names = FALSE)
+write.csv(ratings, file.path("gen/temp", "ratings.csv"), row.names = FALSE)
 
-message("Data preparation complete. Files saved in folder: ", out_dir)
+message("Data preparation complete. Files saved in folder:  gen/temp")
