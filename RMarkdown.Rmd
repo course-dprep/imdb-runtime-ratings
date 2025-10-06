@@ -1,9 +1,10 @@
 ---
-output:
+title: "IMDb Data Cleaning and Exploration"
+  output:
   pdf_document: default
   html_document: default
 ---
-Necessary Packages
+# Necessary Packages
 ```{r}
 install.packages("dplyr")
 install.packages("readr")
@@ -15,6 +16,8 @@ install.packages("ggplot2")
 install.packages("forcats")
 install.packages("tidyr")
 install.packages("tinytex")
+
+# Load libraries
 library(dplyr)
 library(readr)
 library(fs)
@@ -27,10 +30,10 @@ library(forcats)
 library(tidyr)
 ```
 
-Data Pulling Script
+# Data Pulling Script
 ```{r}
 base_url <- "https://datasets.imdbws.com/"                 # Base URL for IMDb datasets
-files <- c("title.basics.tsv.gz", "title.ratings.tsv.gz")  # The two datasets we want to download
+files <- c("title.basics.tsv.gz", "title.ratings.tsv.gz")  # IMDb dataset files to download
 
 # Set up output directory 
 out_dir <- "data/imdb"              # Folder to store the downloaded files
@@ -48,16 +51,16 @@ for (f in files) {
   }
 }
 
-# Load IMDb datasets into R
-# fread() from data.table is used for fast reading of large .tsv files
-
+# Load IMDb datasets using fread() for efficiency
 basics   <- fread(file.path(out_dir, "title.basics.tsv.gz"),
                   sep = "\t", na.strings = "\\N", quote = "")
 ratings  <- fread(file.path(out_dir, "title.ratings.tsv.gz"),
                   sep = "\t", na.strings = "\\N", quote = "")
 ```
+
+# Quick data exploration
 ```{r}
-#Quick exploration of the datasets
+# Overview of datasets
 summary(ratings)
 summary(basics)
 str(ratings)
@@ -68,9 +71,8 @@ basics$startYear <- as.numeric(basics$startYear)
 basics$runtimeMinutes <- as.numeric(basics$runtimeMinutes)
 ```
 
-Selecting Only Relevant Columns from DataSet
+# Selecting relevant columns
 ```{r}
-
 basics <- basics %>%
   select(
     tconst,           # Unique title identifier (key for merging)
@@ -87,38 +89,36 @@ basics <- basics %>%
   )
 ```
 
-Checking Missing Values and Their Randomness
+# Checking missing values and patterns
 ```{r}
-sum(is.na(basics$runtimeMinutes))   #Count how many NAs there are
-mean(is.na(basics$runtimeMinutes))  # proportion of missing values
+# Count and proportion of missing runtimes
+sum(is.na(basics$runtimeMinutes))   
+mean(is.na(basics$runtimeMinutes))  
 
-#Compare distributions (movies with vs. without runtimeMinutes)
+# Create indicator for missing runtimes
 basics$runtime_missing <- is.na(basics$runtimeMinutes)
 table(basics$runtime_missing)
 
-#Check if NAs are more common for certain years, title types, or genres:
-
-# Check if NAs are related to popularity (ratings dataset)
-# Step 1: Split multi-genre strings into separate rows
+# Check association of missingness with other variables
 basics_long <- basics %>%
   separate_rows(genres, sep = ",") %>%
-  mutate(runtime_missing = is.na(runtimeMinutes))
-
-# Step 2: Collapse to top 10 genres (rest -> "Other")
-basics_long <- basics_long %>%
+  mutate(runtime_missing = is.na(runtimeMinutes)) %>%
   mutate(genres = fct_lump(genres, n = 10))
 
-# Merge basics and ratings datasets on the common key "tconst"
-merged_df <- merge(basics, ratings, by = "tconst")
-merged_df$runtime_missing <- is.na(merged_df$runtimeMinutes) #New column called runtime_missing
+# Merge datasets
+merged_df <- merge(basics, ratings, by = "tconst") %>%
+  mutate(runtime_missing = is.na(runtimeMinutes)) 
+``` 
 
-#Run all of the plots at once to view them side by side
-
+# Visualizing missing data patterns
+```{r}
+# Missingness by release year
 ggplot(basics, aes(x = startYear, fill = runtime_missing)) +
   geom_bar(position = "fill") +
   labs(title = "Proportion of missing runtimes by release year",
        y = "Proportion")
 
+# Missingness by genre
 ggplot(basics_long, aes(x = genres, fill = runtime_missing)) +
   geom_bar(position = "fill") +
   labs(title = "Proportion of Missing Runtimes by Top 10 Genres",
@@ -126,6 +126,7 @@ ggplot(basics_long, aes(x = genres, fill = runtime_missing)) +
        y = "Proportion") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+# Missingness by popularity (number of votes)
 merged_df %>%
   mutate(vote_bin = cut(numVotes,
                         breaks = c(0, 100, 1000, 10000, 100000, Inf),
@@ -136,24 +137,28 @@ merged_df %>%
        x = "Vote Category",
        y = "Proportion")
 
+# Missingness by average rating
 ggplot(merged_df, aes(x = averageRating, fill = runtime_missing)) +
   geom_bar(position = "fill") +
   labs(title = "Proportion of missing runtimes by Average Rating",
        y = "Proportion")
+```
 
-merged_df$log10_numVotes <- log10(merged_df$numVotes)
-
-merged_df <- merged_df %>%
-  mutate(Runtime10 = (runtimeMinutes - mean(runtimeMinutes, na.rm = TRUE)) / 10)
-
-#Statistical test of missing patterns
+# Statistical tests & transformations
+```{r}
+# Statistical tests of missingness patterns
 chisq.test(table(basics$startYear, basics$runtime_missing))
 chisq.test(table(basics_long$genres, basics_long$runtime_missing))
 
-
+# Create log-transformed and standardized variables
+merged_df <- merged_df %>%
+  mutate(
+    log10_numVotes = log10(numVotes),
+    Runtime10 = (runtimeMinutes - mean(runtimeMinutes, na.rm = TRUE)) / 10
+  )
 ```
 
-Filtering 3 Selected Genres, RunTime and Number of Votes
+# Filtering genres and votes
 ```{r}
 merged_df <- merged_df %>%
   filter(str_detect(genres, "Comedy") |
@@ -164,7 +169,7 @@ merged_df <- merged_df %>%
   filter(numVotes >= 50)                       # Keep NA and films with few votes
 ```
 
-Generating Values for NA RunTimes
+# Imputing missing runtimes
 ```{r}
 #  Impute missing runtimes by Genre x YearGroup 
 merged_df <- merged_df %>%
@@ -181,5 +186,4 @@ merged_df <- merged_df %>%
     runtimeMinutes
   )) %>%
   ungroup()
-
 ```
