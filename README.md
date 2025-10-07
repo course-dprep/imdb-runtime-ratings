@@ -82,9 +82,7 @@ where:
 **Include a tree diagram that illustrates the repository structure*
 
 ## Dependencies 
-The following packages are necessary: 
-
-install.packages(c("dplyr","readr","stringr","tidyr","data.table","fs","ggplot2","rmarkdown","knitr"))
+This project runs in R (≥ 4.0) and requires Make (included with macOS/Linux; available via Git Bash or Rtools on Windows). All necessary R packages are listed and installed through the setup scripts (install_packages_for_data_preparation.R and install_packages_for_analysis.R) included in the data preparation and analysis folders. All required R packages are installed automatically when you run make.
 
 ## Running Instructions 
 
