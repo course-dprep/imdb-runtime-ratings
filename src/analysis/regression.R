@@ -1,13 +1,7 @@
 # Set CRAN mirror
 options(repos = c(CRAN = "https://cloud.r-project.org"))
 
-
 ###REQUIRED PACKAGES
-install.packages("sandwich")
-install.packages("lmtest")
-install.packages("car")
-install.packages("scales")
-install.packages("knitr")
 library(dplyr)
 library(tidyverse)
 library(stringr)
@@ -16,6 +10,9 @@ library(lmtest)
 library(car)
 library(scales)
 library(knitr)
+library(here)
+
+merged_df <- readr::read_csv(here("gen", "output", "final_dataset.csv"), show_col_types = FALSE)
 
 ## Regression Analysis
 # Model: Rating ~ Runtime10 * Genre + Runtime10 * YearGroup + logVotes
@@ -65,8 +62,6 @@ assump_df <- cbind(model.frame(model), residuals_lm = resid(model))
 leveneTest(residuals_lm ~ Genre * year_group, data = assump_df, center = mean)
 
 # Robust SEs (fix heteroscedasticity in inference)
-
-
 robust_se <- vcovHC(model, type = "HC3")
 coeftest(model, vcov = robust_se)
 
