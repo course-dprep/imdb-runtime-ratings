@@ -1,2 +1,8 @@
 *
-!.gitignore
+# ignore everything in gen
+**
+# but keep the directory placeholders
+!temp/
+!output/
+!temp/.gitkeep
+!output/.gitkeep
