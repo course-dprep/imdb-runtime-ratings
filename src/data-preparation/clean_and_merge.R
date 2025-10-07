@@ -1,14 +1,15 @@
-# Set CRAN mirror
-options(repos = c(CRAN = "https://cloud.r-project.org"))
-
 
 ###REQUIRED PACKAGES
-install.packages("stringr")
-install.packages("readr")
 library(dplyr)
 library(stringr)
 library(readr)
 library(here)
+
+fs::dir_create(here::here("gen", "output"))
+
+# read from ROOT/gen/temp
+basics  <- read_csv(here("gen", "temp", "basics.csv"),  show_col_types = FALSE)
+ratings <- read_csv(here("gen", "temp", "ratings.csv"), show_col_types = FALSE)
 
 # Convert columns stored as character to numeric for easier analysis
 basics$startYear <- as.numeric(basics$startYear)
@@ -77,4 +78,6 @@ merged_df <- merged_df %>%
 
 ###SAVING FINAL MERGED DATASET FOR ANALYSIS
 
-write.csv(merged_df, here("gen/output", "final_dataset.csv"), row.names = FALSE)
+# write to ROOT/gen/output
+write.csv(merged_df, here::here("gen", "output", "final_dataset.csv"), row.names = FALSE)
+

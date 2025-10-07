@@ -1,5 +1,19 @@
 
+###REQUIRED PACKAGES 
+library(dplyr)
+library(tidyr)
+library(readr)
+library(data.table)
+library(stringr)
+library(forcats)
+library(fs)
+library(here)
 library(ggplot2)
+library(scales)
+
+merged_df <- readr::read_csv(here("gen", "output", "final_dataset.csv"), show_col_types = FALSE)
+outdir <- here::here("gen", "output", "desc-analysis-figures")
+fs::dir_create(outdir)
 
 # Number of films per year
 p1 <- merged_df %>%
@@ -9,8 +23,8 @@ p1 <- merged_df %>%
   scale_x_continuous(labels = number_format(accuracy = 1)) +
   labs(title = "Number of Films per Year (2011–2020)",
        x = "Year", y = "Number of Films")
-ggsave("gen/output/films_per_year.png", plot = p1, width = 6, height = 4, dpi = 300)
-
+ggsave(here::here("gen", "output", "desc-analysis-figures", "films_per_year.png"),
+       plot = p1, width = 6, height = 4, dpi = 300)
 
 # Average rating per year
 p2 <- merged_df %>%
@@ -21,8 +35,8 @@ p2 <- merged_df %>%
   scale_x_continuous(labels = number_format(accuracy = 1)) +
   labs(title = "Average IMDb Rating per Year",
        x = "Year", y = "Average Rating")
-ggsave("gen/output/avgrating_per_year.png", plot = p2, width = 6, height = 4, dpi = 300)
-
+ggsave(here::here("gen", "output", "desc-analysis-figures", "avgrating_per_year.png"),
+       plot = p2, width = 6, height = 4, dpi = 300)
 
 
 # Distribution of ratings
@@ -31,9 +45,8 @@ p3 <- merged_df %>%
   geom_histogram(binwidth = 0.2, fill = "goldenrod", color = "white") +
   labs(title = "Distribution of IMDb Ratings",
        x = "Rating", y = "Number of Films")
-
-ggsave("gen/output/dist_of_ratings.png", plot = p3, width = 6, height = 4, dpi = 300)
-
+ggsave(here::here("gen", "output", "desc-analysis-figures", "dist_of_ratings.png"),
+       plot = p3, width = 6, height = 4, dpi = 300)
 
 # Average rating per genre
 p4 <- merged_df %>%
@@ -45,8 +58,8 @@ p4 <- merged_df %>%
   geom_col() +
   labs(title = "Average IMDb Rating by Genre",
        x = "Genre", y = "Average Rating")
-ggsave("gen/output/avgrating_per_genre.png", plot = p4, width = 6, height = 4, dpi = 300)
-
+ggsave(here::here("gen", "output", "desc-analysis-figures", "avgrating_per_genre.png"),
+       plot = p4, width = 6, height = 4, dpi = 300)
 
 # Distribution of votes (log scale)
 p5 <- merged_df %>%
@@ -55,8 +68,8 @@ p5 <- merged_df %>%
   scale_x_log10() +
   labs(title = "Distribution of Number of Votes (log scale)",
        x = "Number of Votes (log10)", y = "Number of Films")
-ggsave("gen/output/logdist_of_votes.png", plot = p5, width = 6, height = 4, dpi = 300)
-
+ggsave(here::here("gen", "output", "desc-analysis-figures", "logdist_of_votes.png"),
+       plot = p5, width = 6, height = 4, dpi = 300)
 
 
 # Average number of votes per genre
@@ -69,8 +82,8 @@ p6 <- merged_df %>%
   geom_col() +
   labs(title = "Average Number of Votes by Genre",
        x = "Genre", y = "Average Votes")
-ggsave("gen/output/avgvotes_per_genre.png", plot = p6, width = 6, height = 4, dpi = 300)
-
+ggsave(here::here("gen", "output", "desc-analysis-figures", "avgvotes_per_genre.png"),
+       plot = p6, width = 6, height = 4, dpi = 300)
 
 
 # Distribution of runtimes
@@ -79,8 +92,8 @@ p7 <- merged_df %>%
   geom_histogram(binwidth = 10, fill = "darkgreen", color = "white") +
   labs(title = "Distribution of Runtimes",
        x = "Runtime (minutes)", y = "Number of Films")
-ggsave("gen/output/dist_of_runtimes.png", plot = p7, width = 6, height = 4, dpi = 300)
-
+ggsave(here::here("gen", "output", "desc-analysis-figures", "dist_of_runtimes.png"),
+       plot = p7, width = 6, height = 4, dpi = 300)
 
 
 # Average runtime per year
@@ -92,8 +105,8 @@ p8 <- merged_df %>%
   scale_x_continuous(labels = number_format(accuracy = 1)) +
   labs(title = "Average Runtime per Year",
        x = "Year", y = "Runtime (minutes)")
-ggsave("gen/output/avgruntime_per_year.png", plot = p8, width = 6, height = 4, dpi = 300)
-
+ggsave(here::here("gen", "output", "desc-analysis-figures", "avgruntime_per_year.png"),
+       plot = p8, width = 6, height = 4, dpi = 300)
 
 # Runtime distribution by genre
 p9 <- merged_df %>%
@@ -103,8 +116,8 @@ p9 <- merged_df %>%
   geom_boxplot() +
   labs(title = "Runtime Distribution by Genre",
        x = "Genre", y = "Runtime (minutes)")
-ggsave("gen/output/runtimedist_by_genre.png", plot = p9, width = 6, height = 4, dpi = 300)
-
+ggsave(here::here("gen", "output", "desc-analysis-figures", "runtimedist_by_genre.png"),
+       plot = p9, width = 6, height = 4, dpi = 300)
 
 # Heatmap: Average rating per genre per year
 p10 <- merged_df %>%
@@ -118,8 +131,8 @@ p10 <- merged_df %>%
   scale_x_continuous(labels = number_format(accuracy = 1)) +
   labs(title = "Average IMDb Rating per Genre per Year",
        x = "Year", y = "Genre", fill = "Average Rating")
-ggsave("gen/output/heatmap_of_averagerating_per_year.png", plot = p10, width = 6, height = 4, dpi = 300)
-
+ggsave(here::here("gen", "output", "desc-analysis-figures", "heatmap_of_averagerating_per_year.png"),
+       plot = p10, width = 6, height = 4, dpi = 300)
 
 # Summary by genre
 merged_df %>%

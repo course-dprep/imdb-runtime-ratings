@@ -1,23 +1,20 @@
-# Set CRAN mirror
-options(repos = c(CRAN = "https://cloud.r-project.org"))
 
 ###REQUIRED PACKAGES 
-install.packages("fs")
-install.packages("data.table")
 library(fs)
 library(data.table)
 library(here)
 
-###DATA PULLING SCRIPT
+# Create folders (in main repo)
+fs::dir_create(here::here("gen", "temp"))
+
+### DATA PULLING SCRIPT
 
 base_url <- "https://datasets.imdbws.com/"                 # Base URL for IMDb datasets
 files <- c("title.basics.tsv.gz", "title.ratings.tsv.gz")  # The two datasets we want to download
 
-# Set up output directory           
-
-out_dir <- here("data" )              # Folder to store the downloaded files
-
-dir_create(out_dir)                 # Create the directory if it doesn't already exist
+# Set up output directory (for raw IMDb downloads)
+out_dir <- here::here("data")       # store downloads in /data
+fs::dir_create(out_dir)             # Create the directory if it doesn't already exist
 
 # Download IMDb files if not already present locally
 for (f in files) {
@@ -39,7 +36,8 @@ basics   <- fread(file.path(out_dir, "title.basics.tsv.gz"),
 ratings  <- fread(file.path(out_dir, "title.ratings.tsv.gz"),
                   sep = "\t", na.strings = "\\N", quote = "")
 
-write.csv(basics, file.path("gen/temp", "basics.csv"), row.names = FALSE)
-write.csv(ratings, file.path("gen/temp", "ratings.csv"), row.names = FALSE)
+dir_create(here("gen", "temp"))
+write.csv(basics,  here("gen", "temp", "basics.csv"),  row.names = FALSE)
+write.csv(ratings, here("gen", "temp", "ratings.csv"), row.names = FALSE)
 
-message("Data preparation complete. Files saved in folder:  gen/temp")
+message("Data preparation complete. Files saved in folder: ", here::here("gen", "temp"))

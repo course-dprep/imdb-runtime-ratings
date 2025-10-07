@@ -1,23 +1,44 @@
-# Final target: cleaned and merged dataset
-all: gen_data/final_dataset.csv
+# Makefile for data-preparation (run from src/data-preparation)
 
-# Step 1: Download data (creates basics.csv and ratings.csv in gen_data/)
-gen_data/basics.csv gen_data/ratings.csv: download.R
+.PHONY: all install clean
+
+# run everything (install → download → clean/merge → explore)
+all: \
+  ../gen/output/data-exploration-figures/runtime_by_year.png \
+  ../gen/output/data-exploration-figures/runtime_by_genre.png \
+  ../gen/output/data-exploration-figures/runtime_by_vote.png \
+  ../gen/output/data-exploration-figures/runtime_by_rating.png
+
+install:
+	Rscript install_packages_for_data_preparation.R
+
+# Step 1: download → ROOT/gen/temp/*
+../gen/temp/basics.csv ../gen/temp/ratings.csv: download.R | install
+	mkdir -p ../gen/temp
 	Rscript download.R
 
-# Step 2: Clean and merge datasets (depends on downloaded CSVs)
-gen_data/final_dataset.csv: clean_and_merge.R gen_data/basics.csv gen_data/ratings.csv
+# Step 2: clean & merge → ROOT/gen/output/final_dataset.csv
+../gen/output/final_dataset.csv: clean_and_merge.R ../gen/temp/basics.csv ../gen/temp/ratings.csv | install
+	mkdir -p ../gen/output
 	Rscript clean_and_merge.R
 
-# Optional Step 3: Data exploration (adjust paths if needed)
-.PHONY: explore
-results/exploration.png: ../analysis/data\ exploration.R gen_data/final_dataset.csv
-	cd ../analysis && Rscript "data exploration.R"
+# Step 3: exploration → ROOT/gen/output/data-exploration-figures/*.png
+../gen/output/data-exploration-figures/runtime_by_year.png \
+../gen/output/data-exploration-figures/runtime_by_genre.png \
+../gen/output/data-exploration-figures/runtime_by_vote.png \
+../gen/output/data-exploration-figures/runtime_by_rating.png: data_exploration.R ../gen/output/final_dataset.csv | install
+	mkdir -p ../gen/output/data-exploration-figures
+	Rscript data_exploration.R
 
-# Utility to clean all generated files
 clean:
-	rm -f gen_data/basics.csv \
-	      gen_data/ratings.csv \
-	      gen_data/final_dataset.csv \
-	      ../results/*.png
+	rm -f ../gen/temp/basics.csv \
+	      ../gen/temp/ratings.csv \
+	      ../gen/output/final_dataset.csv \
+	      ../gen/output/data-exploration-figures/runtime_by_year.png \
+	      ../gen/output/data-exploration-figures/runtime_by_genre.png \
+	      ../gen/output/data-exploration-figures/runtime_by_vote.png \
+	      ../gen/output/data-exploration-figures/runtime_by_rating.png
+
+
+
 
