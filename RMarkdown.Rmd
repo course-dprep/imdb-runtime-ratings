@@ -1,10 +1,30 @@
 ---
 title: "IMDb Data Cleaning and Exploration"
 output:
-  html_document: default
+  html_document:
+    code_folding: hide
+    df_print: paged
+    toc: true
+    toc_float: true
+knitr:
+  opts_chunk:
+    echo: false
+    message: false
+    warning: false
 ---
 ## Necessary Packages
+The following R packages are used for importing, cleaning, and analyzing the IMDb data.  
+`dplyr`, `tidyr`, and `stringr` support data manipulation and cleaning;  
+`data.table` and `readr` improve performance when reading large datasets;  
+`ggplot2` is used for visualizations;  
+and the remaining packages assist with file management and report generation.
 ```{r packages, warning=FALSE, message=FALSE}
+#
+packages <- c("dplyr", "readr", "fs", "data.table", "R.utils", 
+              "stringr", "tinytex", "ggplot2", "forcats", "tidyr")
+installed <- packages %in% installed.packages()[, "Package"]
+if (any(!installed)) install.packages(packages[!installed])
+
 # Load libraries
 library(dplyr)
 library(readr)
@@ -19,6 +39,7 @@ library(tidyr)
 ```
 
 ## Data Pulling Script
+This script retrieves the IMDb datasets from the official source, saves them locally, and loads them into R for further analysis.
 ```{r}
 base_url <- "https://datasets.imdbws.com/"                 # Base URL for IMDb datasets
 files <- c("title.basics.tsv.gz", "title.ratings.tsv.gz")  # IMDb dataset files to download
@@ -47,6 +68,10 @@ ratings  <- fread(file.path(out_dir, "title.ratings.tsv.gz"),
 ```
 
 ## Quick data exploration
+This section provides an initial overview of the IMDb datasets to understand their structure and key characteristics.  
+It summarizes the number of observations, variable types, and the general distribution of ratings, votes, and movie attributes.  
+This step helps identify potential data quality issues, such as missing or inconsistent values, before further cleaning and analysis.
+
 ```{r}
 # Overview of datasets
 summary(ratings)
@@ -60,6 +85,7 @@ basics$runtimeMinutes <- as.numeric(basics$runtimeMinutes)
 ```
 
 ## Selecting relevant columns
+This section filters the IMDb dataset to include only feature films released between 2011 and 2020, keeping key variables such as title, year, runtime, and genre.
 ```{r}
 basics <- basics %>%
   select(
@@ -78,6 +104,10 @@ basics <- basics %>%
 ```
 
 ## Checking missing values and patterns
+This section examines the extent and distribution of missing runtime values in the dataset.  
+The results show that **36,055** movies (about **20.9%** of all feature films between 2011 and 2020) have missing runtime information.  
+A logical indicator variable (`runtime_missing`) is created to flag these cases, and the data are further reshaped to explore whether missing values are related to other factors such as genre or release year.  
+Understanding these patterns helps determine whether the missing data are random or systematically associated with specific types of movies.
 ```{r}
 # Count and proportion of missing runtimes
 sum(is.na(basics$runtimeMinutes))   
@@ -99,21 +129,38 @@ merged_df <- merge(basics, ratings, by = "tconst") %>%
 ``` 
 
 ## Visualizing missing data patterns
+This section visualizes the distribution of missing runtime values across different release years. 
+
+Figure 1 shows the **proportion of movies with and without missing runtimes** for each year between 2011 and 2020.  
+The turquoise segments represent films with missing runtime information.  
+The plot indicates that the share of missing runtimes slightly increases for more recent years, suggesting that newer titles in the dataset are somewhat less complete, possibly because not all metadata have been updated yet.
 ```{r}
 # Missingness by release year
 ggplot(basics, aes(x = startYear, fill = runtime_missing)) +
   geom_bar(position = "fill") +
-  labs(title = "Proportion of missing runtimes by release year",
+  labs(title = "Figure 1; Proportion of missing runtimes by release year",
        y = "Proportion")
+```
 
+The figure below illustrates how missing runtime values are distributed across the ten most common movie genres.  
+The turquoise segments represent the share of films lacking runtime information.  
+The results show that missing runtimes are not evenly distributed: genres such as **Documentary** and **Biography** have a noticeably higher proportion of missing values, while **Action** and **Comedy** films tend to have more complete runtime data.  
+This pattern suggests that certain types of movies—particularly documentaries and biographical films—may be less consistently documented in the IMDb database.
+```{r}
 # Missingness by genre
 ggplot(basics_long, aes(x = genres, fill = runtime_missing)) +
   geom_bar(position = "fill") +
-  labs(title = "Proportion of Missing Runtimes by Top 10 Genres",
+  labs(title = "Figure 2; Proportion of Missing Runtimes by Top 10 Genres",
        x = "Genre",
        y = "Proportion") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
 
+Figure 3 examines whether the likelihood of missing runtime information differs by movie popularity, as measured by the number of IMDb votes.  
+The turquoise bars represent films without recorded runtimes.  
+The plot shows that **movies with very few votes (0–100)** have a noticeably higher proportion of missing runtimes, while films with more than 1,000 votes almost never lack this information.  
+This suggests that missing data are more common among lesser-known or recently added titles that have not yet accumulated many viewer ratings.
+```{r}
 # Missingness by popularity (number of votes)
 merged_df %>%
   mutate(vote_bin = cut(numVotes,
@@ -121,18 +168,29 @@ merged_df %>%
                         labels = c("0–100", "101–1k", "1k–10k", "10k–100k", "100k+"))) %>%
   ggplot(aes(x = vote_bin, fill = is.na(runtimeMinutes))) +
   geom_bar(position = "fill") +
-  labs(title = "Proportion of Missing Runtimes by Vote Category",
+  labs(title = "Figure 3; Proportion of Missing Runtimes by Vote Category",
        x = "Vote Category",
        y = "Proportion")
+```
 
+The last figure explores whether the proportion of missing runtime values varies across different IMDb rating levels.  
+The turquoise segments represent movies without recorded runtimes.  
+The results show that **films with very low (below 3)** or **very high (above 8)** ratings have a slightly higher share of missing runtimes, while movies with mid-range ratings (around 5–7) tend to have more complete data.  
+This pattern may indicate that both niche or less popular films and highly rated, possibly newly released titles, are less consistently documented in the database.
+```{r}
 # Missingness by average rating
 ggplot(merged_df, aes(x = averageRating, fill = runtime_missing)) +
   geom_bar(position = "fill") +
-  labs(title = "Proportion of missing runtimes by Average Rating",
+  labs(title = "Figure 4; Proportion of missing runtimes by Average Rating",
        y = "Proportion")
 ```
 
 ## Statistical tests & transformations
+This section uses chi-squared tests to determine whether the occurrence of missing runtime data is systematically related to other variables.  
+The results show highly significant associations (p < 0.001) between missing runtimes and both **release year** and **genre**, indicating that missingness is not random.  
+This suggests that certain genres or years are more prone to missing data, which should be taken into account when handling or imputing missing values.  
+
+In addition, new variables are created to prepare the data for further analysis
 ```{r}
 # Statistical tests of missingness patterns
 chisq.test(table(basics$startYear, basics$runtime_missing))
@@ -147,6 +205,8 @@ merged_df <- merged_df %>%
 ```
 
 ## Filtering genres and votes
+The dataset is filtered to include only Action, Adventure, and Comedy movies.  
+Short films under 30 minutes are excluded, and movies with fewer than 50 votes are removed to focus on well-documented, feature-length titles.
 ```{r}
 merged_df <- merged_df %>%
   filter(str_detect(genres, "Comedy") |
@@ -158,6 +218,11 @@ merged_df <- merged_df %>%
 ```
 
 ## Imputing missing runtimes
+In this section addresses the missing runtime values by applying a median imputation method.  
+Movies are grouped by **genre** and **release period** (2011–2015 or 2016–2020), and the median runtime within each group is calculated.  
+For movies with missing runtime information, the missing value is replaced by the corresponding group median.  
+This approach preserves realistic runtime distributions within genres and time periods, minimizing bias that could arise from using a single overall average.  
+The result is a more complete dataset that maintains internal consistency across film types and release years.
 ```{r}
 #  Impute missing runtimes by Genre x YearGroup 
 merged_df <- merged_df %>%
