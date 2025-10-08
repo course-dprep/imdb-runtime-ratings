@@ -21,25 +21,71 @@ library(knitr)
 library(here)
 ```
 
-## Introduction
+## Motivation
 
-We studied whether movie runtime is associated with IMDb ratings, and
-whether this relationship differs by genre (Comedy, Action, Adventure)
-and period (2011–2015 vs. 2016–2020). We worked with IMDb movie data and
-by:
+In today’s world, movie ratings play an integral part when viewers decide which movie to watch. Among the many factors that influence the rating of a movie, runtime stands out as a relevant one when it comes to audience evaluation. Previously, a study by Choudhary et al. (2024) found runtime to be a statistically significant variable, influencing the rating of a movie across different genres, though the magnitude of this effect varied between genres. This raises the question about exploring not only the magnitude, but also the direction of the runtime effect. On the one hand, longer movies allow for more complex storytelling and character development, but on the other hand, decreasing attention spans (Hayes, 2024) among people may actually drive longer movie ratings down.
 
--   Filtering the dataset (only movies with a runtime of over 30 minutes
-    and rated by more than 50 votes),
+Previous research suggests a significant relationship between movie genres and their ratings, however often note that isolation of the genre variable is not clearly attainable (Choudhary et al., 2024). While there is no clear consensus in the literature on which genres consistently receive the highest ratings, Matthews (2021) argues that audience expectations are more structured for mainstream genres such as drama, action, and comedy than for niche categories. In these popular genres, ratings often reflect not only film quality but also how well a movie aligns with established genre conventions. Building on this, the present research focuses specifically on adventure, action, and comedy, as these genres have consistently generated the highest box office revenues in North America over the past decades (Statista, 2025). Adventure and action dominate due to their large-scale productions, international appeal, and substantial commercial success, while comedy plays a complementary role by reflecting cultural preferences and offering insights into audience diversity. Together, these genres allow for a balanced analysis that captures both the financial strength of blockbuster categories and the cultural relevance of humor-driven films.
 
--   Checking for missing runtimes and testing whether missingness was
-    random,
+In addition to examining the relationship between runtime, genre, and IMDb ratings, it is also important to define a clear time interval for the research. The global Netflix subscriber data provides a useful benchmark: in early 2013, Netflix had around 30 million paid subscribers, but by 2015 that number had more than doubled to over 70 million (Netflix, 2025). This rapid acceleration reflects the point at which streaming shifted from an emerging model to a mainstream mode of media consumption, making 2015 a suitable cutoff year. Streaming services mark a natural cutoff point because they changed how runtimes are perceived: before streaming, films were optimized for theatrical showings and ticket sales, while streaming enabled more flexibility in length. As audiences gained on-demand access, tolerance for both shorter and longer runtimes shifted, making streaming adoption a key turning point for analyzing runtime effects on IMDb ratings. To ensure balanced group sizes around our cutoff, we divided the data into two equal-length periods: 2011–2015 and 2016–2020. This allows us to compare runtime–rating relationships across time while keeping the number of films per period reasonably similar. Accordingly, the research will compare films released between 2011 and 2015 with those released between 2016 and 2020.
 
--   Creating descriptive statistics and visualizations to show trends,
+Thus, the research question for this project is defined as “How does runtime influence IMDb ratings, and how is this relationship moderated by genre (Adventure, Action and Comedy) when comparing films released between 2011 and 2015 to those released between 2016 and 2020?” This research addresses a gap in the currently existing literature of factors that influence audience reception of movies such as IMDb ratings by investigating how the release year (between 2011 and 2015 versus between 2016 and 2020) and genre (Adventure, Action and Comedy) have a moderating effect on the relationship between runtime and IMDb ratings of movies. Previous research looked at the individual effects of runtime, release year and genre (Horror, Comedy and Action) on IMDb ratings while this research also looks at the relative effects of these variables and how they interact with each other.
 
--   Running an OLS regression with interactions to study how runtime,
-    genre, and year relate to IMDb ratings.
+Further, this research is relevant to different marketing stakeholders in the movie industry such as marketing managers of movie studios, streaming platforms and cinemas. By providing valuable insights on the runtime preferences of audiences these can be used for example by movie studios to create movies across different genres with an optimal runtime and by streaming platforms and cinemas to find the optimal marketing strategy to movies of different runtimes and genres.
 
-## Methods
+## Data
+
+- We are using two files from the IMDB database:
+  1) title.basics.tsv.gz (contains unique identifier of the title, the type/format of the title, original title, the release year of a title, TV Series end year, primary runtime of the title, genres)
+  2) title.ratings.tsv.gz (contains unique identifier of the title, averageRating and number of votes the title has received)
+     
+- The final dataset includes 20144 observations. 
+A variable description / operationalisation table is below.
+
+## Variable Description and Operationalisation
+
+| Variable        | Type              | Source              | Operationalisation (How it is measured/defined)                                 |
+|-----------------|-------------------|---------------------|---------------------------------------------------------------------------------|
+| `Rating`        | Dependent         | `title.ratings`     | `averageRating` (on a scale of 1-10, continuous)                                |
+| `Runtime10`     | Independent       | `title.basics`      | (`runtimeMinutes` - mean(`runtimeMinutes`))/10                                  |
+| `Genre`         | Moderator         | `title.basics`      | Comedy (reference), Adventure (dummy), Action (dummy)                           |
+| `YearGroup`     | Moderator         | `title.basics`      | 2011-2015 (reference), 2016-2020 (dummy)                                        |  
+| `numVotes`      | Control           | `title.rating`      | Total IMDb votes                                                                |
+| `logVotes`      | Control           |  Derived            | log10(`numVotes`). Interpreted as +1 = 10x more votes                           |
+| `Intercept`     | Derived           |  Model              | Comedy movie, 2011-2015, mean `runtimeMinutes`, mean `logVotes`                 |
+
+To ensure data quality and meaningful analysis, we applied the following filters to the dataset:
+
+1) Runtime filter: We excluded movies with a runtime below 30 minutes.
+
+Rationale: Very short films (e.g., shorts, experimental pieces) are structurally different from feature-length movies, and including them would bias our analysis of how runtime affects ratings.
+
+2) Vote count filter: We excluded movies with fewer than 50 votes.
+
+Rationale: IMDb ratings for movies with very few votes are often unstable and unreliable. Setting a threshold of 50 votes ensures that our dataset contains movies with sufficient audience engagement to provide a more representative measure of audience opinion.
+
+### Handling Missing Values (Runtime)
+
+During the data preparation phase, we observed that some movies in the IMDb dataset had missing values for runtimeMinutes. Further exploration revealed that these missing values were not randomly distributed: they tended to occur more frequently in certain genres and time periods. Because runtime is our main independent variable, we could not simply drop these movies, as that might bias our analysis.
+
+To address this, we applied a median imputation strategy grouped by genre and release period. Specifically:
+Movies were grouped by genre (Comedy, Action, Adventure) and release year group (2011–2015 vs. 2016–2020).
+Within each group, missing runtimes were replaced with the median runtime of that group. (Median was chosen instead of the mean because it is more robust to outliers.)
+This approach ensures that our dataset remains complete without artificially inflating runtimes or discarding a large number of observations. 
+
+## Method
+
+For this research we will perform a multiple linear regression with interaction terms to find ou  t whether the runtime of a movie (continuous) influences its IMDb rating (continuous) and whether a film’s genre (Comedy, Adventure or Action) (categorical) and the release period (2011-2015 vs. 2016-2020) (categorical) influence this relationship. The runtime is the independent variable, the IMDb rating is the dependent variable and the two moderators are Genre (Comedy vs. Adventure vs. Action) and Release Period (2011-2015 vs. 2016-2020). Further, we will include the number of IMDb votes (expressed as a log-scaled variable) as a control variable since ratings based on more votes are usually more stable and reliable (Xie & Lui, 2013). We have chosen for a multiple linear regression with interaction terms as this is the most suitable way to combine these variable types, a continuous independent and dependent variable and two categorical moderators, into one model.
+This will lead to the following model:
+Rating = X₀ + β₁·Runtime10 + β₂·Adventure + β₃·Action + β₄·Yeargroup<sub>2016–2020</sub> + β₅·(Runtime10 × Adventure) + β₆·(Runtime10 × Action) + β₇·(Runtime10 × Yeargroup<sub>2016–2020</sub>) + β₈·log₁₀(Votes) + ϵ  
+
+where:  
+- β₁ = How the effect of +10 minutes runtime on IMDb ratings changes for Comedy movies released in 2011–2015  
+- β₂, β₃ = How the effect of +10 minutes runtime on IMDb ratings changes for Adventure and Action movies compared to Comedy movies  
+- β₄ = How the IMDb ratings change between movies released in <sub>2016–2020</sub> compared to movies released in 2011–2015  
+- β₅, β₆ = How the effect of +10 minutes runtime on IMDb ratings changes for Adventure and Action movies compared to Comedy movies  
+- β₇ = How the effect of +10 minutes runtime on IMDb ratings changes for movies released in 2016–2020 compared to 2011–2015  
+- β₈ = How the IMDb ratings change between movies when the number of votes increases by a factor of 10  
 
 We began with a descriptive analysis to explore the data. This included
 examining trends over time, looking at the distributions of ratings,
@@ -57,29 +103,15 @@ the analysis in two steps:
     We then estimated an ordinary least squares (OLS) regression with
     interaction terms to test whether a film’s runtime influences its
     IMDb rating, and whether this relationship differs by genre and
-    release period. Runtime was treated as a continuous predictor,
-    scaled in 10-minute units (`Runtime10`), IMDb rating was the
-    continuous outcome, and the two moderators were Genre (`Comedy`,
-    `Adventure`, `Action`) and Release Period (`2011–2015` vs.
-    `2016–2020`).
+    release period.
 
-    To control for rating stability, we included the number of IMDb
+To control for rating stability, we included the number of IMDb
     votes (log₁₀-transformed) as a covariate. Robust HC3 standard errors
     were used to account for heteroskedasticity, and we checked
     diagnostics including heteroskedasticity tests, residual normality,
     and variance inflation factors (VIF).
 
-The regression model can be written as:
-
-$$
-\text{Rating} = \beta_0 + \beta_1 \cdot \text{Runtime10} + \beta_2 \cdot \text{Adventure} + \beta_3 \cdot \text{Action} + \beta_4 \cdot \text{YearGroup}_{2016–2020} 
-+ \beta_5 \cdot (\text{Runtime10} \times \text{Adventure}) +$$
-
-$$\beta_6 \cdot (\text{Runtime10} \times \text{Action}) + \beta_7 \cdot (\text{Runtime10} \times \text{YearGroup}_{2016–2020}) + \beta_8 \cdot \log_{10}(\text{Votes}) + \epsilon
-$$
-
 ## Descriptive Results
-
 ```{r descriptive-tables, echo=FALSE, message=FALSE, warning=FALSE}
 # 1) Load data (rename to avoid clashing with stats::df) 
 movies <- readr::read_csv(here::here("gen", "output", "final_dataset.csv"),
@@ -115,70 +147,73 @@ year_tbl <- movies %>%
 knitr::kable(year_tbl, digits = 2, caption = "Summary by Year")
 ```
 
-## Descriptive figures
+### Descriptive figures
 
-#3 Ratings were fairly stable over time, with a slight downward trend
-after 2017.
+#### Film output over time 
+The number of films released annually increased steadily from 2011 until around 2018, reaching a peak of over 2,000 titles per year. After 2018, we observe a decline in output, with a particularly sharp drop in 2020. This is likely due to the disruptions in global film production during the COVID-19 pandemic.
+<br><br> 
+<img src="../gen/output/desc-analysis-figures/films_per_year.png" alt="Number of films per year" style="width:60%"> 
+<br> 
 
-```{r fig-avgrating-year, echo=FALSE, out.width="60%"}
-knitr::include_graphics(here::here("gen","output","desc-analysis-figures","avgrating_per_year.png"))
-```
+#### Runtime patterns 
+Since runtime is our main explanatory variable, we first explore its distribution across time and genres. This helps establish whether there is enough variation in runtimes to meaningfully relate them to ratings.
 
-<br><br> #6 Runtimes were concentrated between 80–120 minutes, with some
-outliers representing very short or very long films.
+##### Average runtime per year
+The average runtime of films remained remarkably consistent across the 2011–2020 period, fluctuating only within a narrow range of about 97–102 minutes. This stability suggests that runtime norms were fairly entrenched across the decade.
+<br><br> 
+<img src="../gen/output/desc-analysis-figures/avgruntime_per_year.png" alt="Average runtime per year" style="width:60%">
+<br> 
 
-```{r fig-votes-log, echo=FALSE, out.width="60%"}
-knitr::include_graphics(here::here("gen","output","desc-analysis-figures","logdist_of_votes.png"))
-```
+##### Distribution of runtimes
+Most films fell into a range of 80–120 minutes, with a clear peak around 95–105 minutes. Only a small share of films were much shorter or longer, indicating that runtimes cluster strongly around conventional feature-length standards. 
+<br><br> 
+<img src="../gen/output/desc-analysis-figures/dist_of_runtimes.png" alt="Distribution of runtimes" style="width:60%">
+<br> 
 
-<br><br> #10 Action films generally had the longest runtimes, followed
-by Adventure, while Comedies tended to be shorter on average.
+##### Runtime distribution by genre
+When broken down by genre, Action films showed the highest median runtimes and the widest spread, reflecting the blockbuster tendency toward longer movies. Adventure films were slightly shorter but still above 95 minutes on average, while Comedies were noticeably shorter and less variable, clustering tightly around the 90–100 minute range.
+<br><br> 
+<img src="../gen/output/desc-analysis-figures/runtimedist_by_genre.png" alt="Runtime distribution by genre" style="width:60%">
+<br> 
 
-```{r fig-heatmap-rating, echo=FALSE, out.width="60%"}
-knitr::include_graphics(here::here("gen","output","desc-analysis-figures","heatmap_of_averagerating_per_year.png"))
-```
+#### IMDb ratings (main outcome)
+Ratings are the key dependent variable of the research. By describing their distribution across years and genres, we can see whether patterns emerge that runtime might help explain.
 
-<br><br> #2 The number of films released annually increased until around
-2018, with a small decline in 2019–2020.
+##### Average rating per year
+Mean IMDb ratings across all films were stable at around 5.6 for most of the decade. However, after 2017 a modest decline is visible, suggesting either changes in the kinds of films being produced or shifts in audience evaluation.
+<br><br> 
+<img src="../gen/output/desc-analysis-figures/avgrating_per_year.png" alt="Average rating per year" style="width:60%">
+<br> 
 
-```{r fig-films-year, echo=FALSE, out.width="60%"}
-knitr::include_graphics(here::here("gen","output","desc-analysis-figures","films_per_year.png"))
-```
+##### Distribution of IMDb ratings
+The histogram shows that most films score between 5 and 6, with relatively few extreme ratings. Very high ratings (above 8) are rare, which reflects IMDb’s tendency toward a compressed rating scale centered in the mid-range.
+<br><br> 
+<img src="../gen/output/desc-analysis-figures/dist_of_ratings.png" alt="Distribution of IMDb ratings" style="width:60%">
+<br> 
 
-<br><br> #5
+##### Average rating by genre
+Adventure films achieved the highest average ratings (≈5.7), slightly above Comedy and Action. Comedies and Action movies clustered more closely together (≈5.5 to 5.6), indicating that modest genre differences in audience evaluations exist.
+<br><br> 
+<img src="../gen/output/desc-analysis-figures/avgrating_per_genre.png" alt="Average rating by genre" style="width:60%">
+<br> 
 
-```{r fig-avgrating-genre, echo=FALSE, out.width="60%"}
-knitr::include_graphics(here::here("gen","output","desc-analysis-figures","avgrating_per_genre.png"))
-```
+##### Heatmap: average IMDb rating per Year x Genre
+Across time, all three genres showed stable ratings without major trends. Adventure films consistently outperformed the others, while Action films slightly underperformed, but the differences were small. No single year shows any significant spikes or drops for any genre.
+<br><br> 
+<img src="../gen/output/desc-analysis-figures/heatmap_of_averagerating_per_year.png" alt="Heatmap rating by year × genre" style="width:60%">
+<br> 
 
-<br><br> #1
+#### Votes (control variable)
+Finally, we consider votes, which serve as a control variable in the regression analysis. Audience size matters, because ratings based on larger numbers of votes are seen as more stable and reliable.
 
-```{r fig-avgruntime, echo=FALSE, out.width="60%"}
-knitr::include_graphics(here::here("gen","output","desc-analysis-figures","avgruntime_per_year.png"))
-```
+##### Distribution of votes (log scale)
+The vote distribution is highly right-skewed: the majority of films received only a few hundred or thousand votes, while a small number attracted hundreds of thousands or even millions. This reflects the blockbuster vs. niche divide in audience reach.
+<br><br> 
+<img src="../gen/output/desc-analysis-figures/logdist_of_votes.png" alt="Distribution of votes (log scale)" style="width:60%">
+<br> 
 
-<br><br> #8
-
-```{r fig-dist-runtime, echo=FALSE, out.width="60%"}
-knitr::include_graphics(here::here("gen","output","desc-analysis-figures","dist_of_runtimes.png"))
-```
-
-<br><br> #4
-
-```{r fig-dist-ratings, echo=FALSE, out.width="60%"}
-knitr::include_graphics(here::here("gen","output","desc-analysis-figures","dist_of_ratings.png"))
-```
-
-<br><br> #9
-
-```{r fig-runtime-genre, echo=FALSE, out.width="60%"}
-knitr::include_graphics(here::here("gen","output","desc-analysis-figures","runtimedist_by_genre.png"))
-```
-
-<br><br> #7
-
-```{r fig-avgvotes-genre, echo=FALSE, out.width="60%"}
-knitr::include_graphics(here::here("gen","output","desc-analysis-figures","avgvotes_per_genre.png"))
-```
-
-<br><br>
+##### Average number of votes by genre
+Adventure films were the most popular in terms of audience engagement, receiving the highest average vote counts. Action films also attracted more attention and votes, while Comedies had fewer votes on average, which might suggest smaller or more fragmented audiences.
+<br><br> 
+<img src="../gen/output/desc-analysis-figures/avgvotes_per_genre.png" alt="Average votes by genre" style="width:60%">
+<br> 
