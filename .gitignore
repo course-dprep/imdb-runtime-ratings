@@ -18,3 +18,4 @@ gen/**
 !gen/temp/
 !gen/output/.gitignore
 !gen/temp/.gitignore
+src/gen/
