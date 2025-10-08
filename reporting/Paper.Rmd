@@ -113,11 +113,9 @@ To control for rating stability, we included the number of IMDb
 
 ## Descriptive Results
 ```{r descriptive-tables, echo=FALSE, message=FALSE, warning=FALSE}
-# 1) Load data (rename to avoid clashing with stats::df) 
 movies <- readr::read_csv(here::here("gen", "output", "final_dataset.csv"),
                           show_col_types = FALSE)
 
-# 2) Genre summary (multi-label expanded; only Action/Comedy/Adventure)
 genre_tbl <- movies %>%
   tidyr::separate_rows(genres, sep = ",") %>%
   dplyr::filter(genres %in% c("Action","Comedy","Adventure")) %>%
@@ -217,3 +215,21 @@ Adventure films were the most popular in terms of audience engagement, receiving
 <br><br> 
 <img src="../gen/output/desc-analysis-figures/avgvotes_per_genre.png" alt="Average votes by genre" style="width:60%">
 <br> 
+
+## Regression Results
+
+### Main results table
+<img src="../gen/output/regression-results/regression_table_robust.png"
+     alt="Regression results (HC3 robust SEs)" style="width:50%;max-width:500px">
+<p style="font-style:italic;">
+Ordinary least squares with HC3 robust standard errors.
+</p>
+
+### Coefficient plot
+<img src="../gen/output/regression-results/regression_coefficients.png"
+     alt="Coefficient estimates with 95% confidence intervals" style="width:55%;max-width:550px">
+
+### Diagnostics: residuals vs fitted
+<img src="../gen/output/regression-results/residuals_vs_fitted.png"
+     alt="Residuals vs Fitted plot" style="width:50%;max-width:500px">
+     
