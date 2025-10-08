@@ -7,17 +7,13 @@
 # macOS
 .DS_Store
 
-# Hide everything at repo root
-/*
 
-# Keep these root files (optional)
-!.gitignore
-!README.md
-!makefile
-
-# Keep only the src folder (and its contents)
-!/src/
-!/src/**
+/*                 # ignore everything at repo root
+!.gitignore        # keep this file
+!README.md         # keep the readme
+!makefile          # keep the makefile (add !Makefile if you use capital M)
+!/src/             # keep src folder
+!/src/**           # and everything inside src
 
 
 
