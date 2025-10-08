@@ -1,7 +1,8 @@
 # R defaults
+*.Rproj
+.Rproj.user/
 .Rhistory
 .RData
-.Rproj.user/
 
 # macOS
 .DS_Store
