@@ -7,6 +7,20 @@
 # macOS
 .DS_Store
 
+# Hide everything at repo root
+/*
+
+# Keep these root files (optional)
+!.gitignore
+!README.md
+!makefile
+
+# Keep only the src folder (and its contents)
+!/src/
+!/src/**
+
+
+
 # data/gen structure rules (as we set earlier)
 data/**
 !data/
