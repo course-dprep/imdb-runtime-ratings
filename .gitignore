@@ -1,31 +1,12 @@
-# R defaults
-*.Rproj
+/*               # ignore everything at repo root
+!.gitignore
+!README.md
+!makefile       # add !Makefile too if capitalized
+!/src/
+!/src/**
+
+# RStudio / R
 .Rproj.user/
+*.Rproj
 .Rhistory
 .RData
-
-# macOS
-.DS_Store
-
-
-/*                 # ignore everything at repo root
-!.gitignore        # keep this file
-!README.md         # keep the readme
-!makefile          # keep the makefile (add !Makefile if you use capital M)
-!/src/             # keep src folder
-!/src/**           # and everything inside src
-
-
-
-# data/gen structure rules (as we set earlier)
-data/**
-!data/
-!data/.gitignore
-
-gen/**
-!gen/
-!gen/.gitignore
-!gen/output/
-!gen/temp/
-!gen/output/.gitignore
-!gen/temp/.gitignore
