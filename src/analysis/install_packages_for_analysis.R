@@ -28,4 +28,4 @@ install.packages("knitr")
 install.packages("dplyr")
 install.packages("tidyverse")
 install.packages("stringr")
-
+install.packages("gt") 
