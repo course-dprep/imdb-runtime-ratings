@@ -4,9 +4,4 @@
 !makefile       # add !Makefile too if capitalized
 !/src/
 !/src/**
-
-# RStudio / R
-.Rproj.user/
-*.Rproj
-.Rhistory
-.RData
+.Rproj.user
