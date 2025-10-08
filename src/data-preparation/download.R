@@ -13,8 +13,8 @@ base_url <- "https://datasets.imdbws.com/"                 # Base URL for IMDb d
 files <- c("title.basics.tsv.gz", "title.ratings.tsv.gz")  # The two datasets we want to download
 
 # Set up output directory (for raw IMDb downloads)
-out_dir <- here::here("data")       # store downloads in /data
 fs::dir_create(out_dir)             # Create the directory if it doesn't already exist
+out_dir <- here::here("data")       # store downloads in /data
 
 # Download IMDb files if not already present locally
 for (f in files) {
