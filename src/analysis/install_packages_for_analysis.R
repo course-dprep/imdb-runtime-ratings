@@ -28,4 +28,10 @@ install.packages("knitr")
 install.packages("dplyr")
 install.packages("tidyverse")
 install.packages("stringr")
+install.packages("gt") 
+
+#packages for make_reg_outputs.R
+
+install.packages("broom")
+install.packages("webshot2")   # to convert HTML tables to PNGs
 

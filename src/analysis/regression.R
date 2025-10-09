@@ -31,6 +31,8 @@ merged_df <- merged_df %>%
 model <- lm(averageRating ~ Runtime10*Genre + Runtime10*year_group + logVotes,
             data = merged_df)
 summary(model)
+#Save the fitted model as an .rds for reproducibility
+saveRDS(model, here("gen", "output", "regression_model.rds"))
 # β1: slope of Runtime10 for the reference group (Comedy, 2011–2015)
 beta1 <- coef(model)[["Runtime10"]]
 
