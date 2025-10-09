@@ -3,15 +3,53 @@
 
 ## Motivation
 
-In today’s world, movie ratings play an integral part when viewers decide which movie to watch. Among the many factors that influence the rating of a movie, runtime stands out as a relevant one when it comes to audience evaluation. Previously, a study by Choudhary et al. (2024) found runtime to be a statistically significant variable, influencing the rating of a movie across different genres, though the magnitude of this effect varied between genres. This raises the question about exploring not only the magnitude, but also the direction of the runtime effect. On the one hand, longer movies allow for more complex storytelling and character development, but on the other hand, decreasing attention spans (Hayes, 2024) among people may actually drive longer movie ratings down.
+In today’s world, movie ratings play an integral part when viewers decide which movie to watch. 
 
-Previous research suggests a significant relationship between movie genres and their ratings, however often note that isolation of the genre variable is not clearly attainable (Choudhary et al., 2024). While there is no clear consensus in the literature on which genres consistently receive the highest ratings, Matthews (2021) argues that audience expectations are more structured for mainstream genres such as drama, action, and comedy than for niche categories. In these popular genres, ratings often reflect not only film quality but also how well a movie aligns with established genre conventions. Building on this, the present research focuses specifically on adventure, action, and comedy, as these genres have consistently generated the highest box office revenues in North America over the past decades (Statista, 2025). Adventure and action dominate due to their large-scale productions, international appeal, and substantial commercial success, while comedy plays a complementary role by reflecting cultural preferences and offering insights into audience diversity. Together, these genres allow for a balanced analysis that captures both the financial strength of blockbuster categories and the cultural relevance of humor-driven films.
+Among the many factors that influence the rating of a movie, runtime stands out as a relevant one when it comes to audience evaluation. 
 
-In addition to examining the relationship between runtime, genre, and IMDb ratings, it is also important to define a clear time interval for the research. The global Netflix subscriber data provides a useful benchmark: in early 2013, Netflix had around 30 million paid subscribers, but by 2015 that number had more than doubled to over 70 million. (Netflix, 2025) This rapid acceleration reflects the point at which streaming shifted from an emerging model to a mainstream mode of media consumption, making 2015 a suitable cutoff year. Streaming services mark a natural cutoff point because they changed how runtimes are perceived: before streaming, films were optimized for theatrical showings and ticket sales, while streaming enabled more flexibility in length. As audiences gained on-demand access, tolerance for both shorter and longer runtimes shifted, making streaming adoption a key turning point for analyzing runtime effects on IMDb ratings. Accordingly, the research will compare films released before 2015 with those released from 2015 onward.
+Previously, a study by Choudhary et al. (2024) found runtime to be a statistically significant variable, influencing the rating of a movie across different genres, though the magnitude of this effect varied between genres.
 
-Thus, the research question for this project is defined as “How does runtime influence IMDb ratings, and how is this relationship moderated by genre (Adventure, Action and Comedy) when comparing films released before 2015 to those released after 2015?” This research addresses a gap in the currently existing literature of factors that influence audience reception of movies such as IMDb ratings by investigating how the release year (before 2015 versus post 2015) and genre (Adventure, Action and Comedy) have a moderating effect on the relationship between runtime and IMDb ratings of movies. Previous research looked at the individual effects of runtime, release year and genre (Horror, Comedy and Action) on IMDb ratings while this research also looks at the relative effects of these variables and how they interact with each other.
+This raises the question about exploring not only the magnitude, but also the direction of the runtime effect. 
 
-Further, this research is relevant to different marketing stakeholders in the movie industry such as marketing managers of movie studios, streaming platforms and cinemas. By providing valuable insights on the runtime preferences of audiences these can be used for example by movie studios to create movies across different genres with an optimal runtime and by streaming platforms and cinemas to find the optimal marketing strategy to movies of different runtimes and genres.
+On the one hand, longer movies allow for more complex storytelling and character development, but on the other hand, decreasing attention spans (Hayes, 2024) among people may actually drive longer movie ratings down.
+
+Previous research suggests a significant relationship between movie genres and their ratings, however often note that isolation of the genre variable is not clearly attainable (Choudhary et al., 2024). 
+
+While there is no clear consensus in the literature on which genres consistently receive the highest ratings, Matthews (2021) argues that audience expectations are more structured for mainstream genres such as drama, action, and comedy than for niche categories. 
+
+In these popular genres, ratings often reflect not only film quality but also how well a movie aligns with established genre conventions. 
+
+Building on this, the present research focuses specifically on adventure, action, and comedy, as these genres have consistently generated the highest box office revenues in North America over the past decades (Statista, 2025). 
+
+Adventure and action dominate due to their large-scale productions, international appeal, and substantial commercial success, while comedy plays a complementary role by reflecting cultural preferences and offering insights into audience diversity. 
+
+Together, these genres allow for a balanced analysis that captures both the financial strength of blockbuster categories and the cultural relevance of humor-driven films.
+
+In addition to examining the relationship between runtime, genre, and IMDb ratings, it is also important to define a clear time interval for the research. 
+
+The global Netflix subscriber data provides a useful benchmark: in early 2013, Netflix had around 30 million paid subscribers, but by 2015 that number had more than doubled to over 70 million (Netflix, 2025). 
+
+This rapid acceleration reflects the point at which streaming shifted from an emerging model to a mainstream mode of media consumption, making 2015 a suitable cutoff year. 
+
+treaming services mark a natural cutoff point because they changed how runtimes are perceived: before streaming, films were optimized for theatrical showings and ticket sales, while streaming enabled more flexibility in length. 
+
+As audiences gained on-demand access, tolerance for both shorter and longer runtimes shifted, making streaming adoption a key turning point for analyzing runtime effects on IMDb ratings. 
+
+To ensure balanced group sizes around our cutoff, we divided the data into two equal-length periods: 2011–2015 and 2016–2020. 
+
+This allows us to compare runtime–rating relationships across time while keeping the number of films per period reasonably similar.
+
+Accordingly, the research will compare films released between 2011 and 2015 with those released between 2016 and 2020.
+
+Thus, the research question for this project is defined as “How does runtime influence IMDb ratings, and how is this relationship moderated by genre (Adventure, Action and Comedy) when comparing films released between 2011 and 2015 to those released between 2016 and 2020?”. 
+
+This research addresses a gap in the currently existing literature of factors that influence audience reception of movies such as IMDb ratings by investigating how the release year (between 2011 and 2015 versus between 2016 and 2020) and genre (Adventure, Action and Comedy) have a moderating effect on the relationship between runtime and IMDb ratings of movies. 
+
+Previous research looked at the individual effects of runtime, release year and genre (Horror, Comedy and Action) on IMDb ratings while this research also looks at the relative effects of these variables and how they interact with each other.
+
+Further, this research is relevant to different marketing stakeholders in the movie industry such as marketing managers of movie studios, streaming platforms and cinemas. 
+
+By providing valuable insights on the runtime preferences of audiences these can be used for example by movie studios to create movies across different genres with an optimal runtime and by streaming platforms and cinemas to find the optimal marketing strategy to movies of different runtimes and genres.
 
 ## Data
 
@@ -55,9 +93,6 @@ Within each group, missing runtimes were replaced with the median runtime of tha
 This approach ensures that our dataset remains complete without artificially inflating runtimes or discarding a large number of observations. 
 
 ## Method
-
-- What methods do you use to answer your research question?
-- Provide justification for why it is the most suitable.
 
 - For this research we will perform a multiple linear regression with interaction terms to find ou  t whether the runtime of a movie (continuous) influences its IMDb rating (continuous) and whether a film’s genre (Comedy, Adventure or Action) (categorical) and the release period (2011-2015 vs. 2016-2020) (categorical) influence this relationship. The runtime is the independent variable, the IMDb rating is the dependent variable and the two moderators are Genre (Comedy vs. Adventure vs. Action) and Release Period (2011-2015 vs. 2016-2020). Further, we will include the number of IMDb votes (expressed as a log-scaled variable) as a control variable since ratings based on more votes are usually more stable and reliable (Xie & Lui, 2013). We have chosen for a multiple linear regression with interaction terms as this is the most suitable way to combine these variable types, a continuous independent and dependent variable and two categorical moderators, into one model.
 This will lead to the following model:

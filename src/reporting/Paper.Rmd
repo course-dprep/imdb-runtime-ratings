@@ -19,6 +19,9 @@ library(tidyr)
 library(readr)
 library(knitr)
 library(here)
+library(sandwich)
+library(lmtest)
+library(car)
 ```
 
 ## Motivation
@@ -218,18 +221,214 @@ Adventure films were the most popular in terms of audience engagement, receiving
 
 ## Regression Results
 
+```{r regression-model, echo=FALSE, message=FALSE, warning=FALSE}
+# Load dataset
+merged_df <- readr::read_csv(here::here("gen", "output", "final_dataset.csv"),
+                             show_col_types = FALSE)
+
+# Model specification
+merged_df <- merged_df %>% mutate(
+  logVotes  = log10(numVotes),
+  Runtime10 = (runtimeMinutes - mean(runtimeMinutes, na.rm = TRUE)) / 10,
+  Genre      = factor(Genre, levels = c("Comedy","Adventure","Action")),
+  year_group = factor(year_group, levels = c("2011-2015","2016-2020"))
+)
+
+model <- lm(averageRating ~ Runtime10*Genre + Runtime10*year_group + logVotes,
+            data = merged_df)
+
+# Robust SEs + regression results
+robust_se  <- vcovHC(model, type = "HC3")
+reg_results <- coeftest(model, vcov = robust_se)
+```
+
+```{r helpers, echo=FALSE, message=FALSE, warning=FALSE}
+# Number formatting
+fmt   <- function(x, d = 3) formatC(x, format = "f", digits = d)
+pstr  <- function(p){
+  if (is.na(p)) return("NA")
+  if (p < 0.001) return("< 0.001")
+  formatC(p, format = "f", digits = 3)
+}
+est   <- function(term) as.numeric(reg_results[term, "Estimate"])
+pval  <- function(term) as.numeric(reg_results[term, "Pr(>|t|)"])
+
+# Higher / lower phrasing
+effect_level <- function(term, d = 3){
+  e <- est(term)
+  if (e < 0) paste0(fmt(abs(e), d), " points lower")
+  else if (e > 0) paste0(fmt(abs(e), d), " points higher")
+  else "no difference"
+}
+
+# Steeper / flatter slopes
+effect_slope <- function(term, d = 3){
+  e <- est(term)
+  if (e < 0) paste0(fmt(abs(e), d), " points flatter per +10 minutes")
+  else if (e > 0) paste0(fmt(abs(e), d), " points steeper per +10 minutes")
+  else "no change in slope"
+}
+```
+
+```{r assumption-tests, echo=FALSE, message=FALSE, warning=FALSE}
+# Homoscedasticity
+assump_df <- cbind(model.frame(model), residuals_lm = resid(model))
+lev_res <- leveneTest(residuals_lm ~ Genre * year_group, data = assump_df, center = mean)
+
+# Normality
+ks_res <- ks.test(assump_df$residuals_lm, "pnorm",
+                  mean = mean(assump_df$residuals_lm),
+                  sd   = sd(assump_df$residuals_lm))
+set.seed(1)
+shap_res <- shapiro.test(sample(assump_df$residuals_lm,
+                                size = min(5000, length(assump_df$residuals_lm))))
+
+# Multicollinearity
+vif_res <- vif(model)
+
+fmt   <- function(x, d = 3) formatC(x, format = "f", digits = d)
+pstr  <- function(p){
+  if (is.na(p)) return("NA")
+  if (p < 0.001) return("< 0.001")
+  formatC(p, format = "f", digits = 3)
+}
+```
+
+### Model assumptions
+- **Homoscedasticity (equal variance):**  
+  Levene’s test across Genre × YearGroup gave an F-statistic of 
+  `r fmt(lev_res[1,"F value"],2)` (*p* = `r pstr(lev_res[1,"Pr(>F)"])`).  
+  Since the test was significant, we conclude residuals are heteroscedastic.  
+  To address this, all inference is reported with HC3 robust standard errors.
+
+- **Normality of residuals:**  
+  The Kolmogorov–Smirnov test gave D = `r fmt(ks_res$statistic,3)` (*p* = `r pstr(ks_res$p.value)`),  
+  and the Shapiro–Wilk test on a subsample of 5,000 residuals gave W = `r fmt(shap_res$statistic,3)` (*p* = `r pstr(shap_res$p.value)`).  
+  Both reject strict normality. However, given the large sample size (>20,000 films), minor deviations are not problematic because OLS inference is robust under the central limit theorem.
+
+- **Multicollinearity:**  
+  The maximum variance inflation factor (VIF) across predictors was `r round(max(vif_res),2)`,  
+  well below the common cutoff of 5. Thus, multicollinearity is not a concern.
+
+**Conclusion:**  
+While homoscedasticity and normality assumptions are not fully met, robust HC3 errors ensure valid inference. Multicollinearity is not an issue, and the model can be considered well-specified.
+
+To illustrate these diagnostic checks visually, we next examine the
+coefficient plot (showing estimated effects with confidence intervals) and
+the residuals vs fitted plot (assessing variance and linearity).
+
+### Model Diagnostics
+
+#### Residuals vs Fitted plot
+The residuals vs fitted plot helps assess whether model assumptions of
+linearity and equal variance hold:
+
+- Levene’s test indicated heteroscedasticity
+  (F = `r fmt(lev_res[1,"F value"],2)`, *p* = `r pstr(lev_res[1,"Pr(>F)"])`),
+  and the plot shows some variation in residual spread across fitted values.
+  This was addressed by using HC3 robust standard errors.
+- Residuals remain centered around zero without strong non-linear patterns,
+  supporting the model’s linear specification.
+
+<br>
+<img src="../gen/output/regression-results/residuals_vs_fitted.png"
+     alt="Residuals vs Fitted plot"
+     style="width:50%;max-width:500px">
+<br>
+
 ### Main results table
 <img src="../gen/output/regression-results/regression_table_robust.png"
      alt="Regression results (HC3 robust SEs)" style="width:50%;max-width:500px">
 <p style="font-style:italic;">
 Ordinary least squares with HC3 robust standard errors.
 </p>
+<br>
 
-### Coefficient plot
+#### Interpretation of Regression Results
+
+- `"Runtime10"` (β₁ = `r fmt(est("Runtime10"))`, *p* = `r pstr(pval("Runtime10"))`):  
+  For Comedy films in 2011–2015, each additional 10 minutes is associated with a
+  `r fmt(est("Runtime10"))` change in IMDb rating.
+
+- `"GenreAdventure"` (β₂ = `r fmt(est("GenreAdventure"))`, *p* = `r pstr(pval("GenreAdventure"))`):  
+  At the average runtime and votes, Adventure films are rated `r effect_level("GenreAdventure")` than Comedy.
+
+- `"GenreAction"` (β₃ = `r fmt(est("GenreAction"))`, *p* = `r pstr(pval("GenreAction"))`):  
+  At the average runtime and votes, Action films are rated `r effect_level("GenreAction")` than Comedy.
+
+- `"year_group2016-2020"` (β₄ = `r fmt(est("year_group2016-2020"))`, *p* = `r pstr(pval("year_group2016-2020"))`):  
+  At the average runtime and votes, films released in 2016–2020 are rated `r effect_level("year_group2016-2020")` than those in 2011–2015.
+
+- `"Runtime10:GenreAdventure"` (β₅ = `r fmt(est("Runtime10:GenreAdventure"))`, *p* = `r pstr(pval("Runtime10:GenreAdventure"))`):  
+  The runtime–rating slope for Adventure vs. Comedy is `r effect_slope("Runtime10:GenreAdventure")`.
+
+- `"Runtime10:GenreAction"` (β₆ = `r fmt(est("Runtime10:GenreAction"))`, *p* = `r pstr(pval("Runtime10:GenreAction"))`):  
+  The runtime–rating slope for Action vs. Comedy is `r effect_slope("Runtime10:GenreAction")`.
+
+- `"Runtime10:year_group2016-2020"` (β₇ = `r fmt(est("Runtime10:year_group2016-2020"))`, *p* = `r pstr(pval("Runtime10:year_group2016-2020"))`):  
+  The runtime–rating slope in 2016–2020 vs. 2011–2015 is `r effect_slope("Runtime10:year_group2016-2020")`.
+
+- `"logVotes"` (β₈ = `r fmt(est("logVotes"))`, *p* = `r pstr(pval("logVotes"))`):  
+  A tenfold increase in votes (log₁₀ + 1) is associated with a `r fmt(est("logVotes"))` change in rating.
+
+**Slopes by group (per +10 minutes):** 
+
+-  Comedy, 2011–2015: `r fmt(est("Runtime10"))`  
+-  Adventure, 2011–2015: `r fmt(est("Runtime10") + est("Runtime10:GenreAdventure"))`  
+-  Action, 2011–2015: `r fmt(est("Runtime10") + est("Runtime10:GenreAction"))`  
+-  Comedy, 2016–2020: `r fmt(est("Runtime10") + est("Runtime10:year_group2016-2020"))`
+
+This table reports the estimated coefficients with HC3 robust standard errors; 
+the accompanying coefficient plot below provides a visual summary of these effects 
+and their 95% confidence intervals.
+
+#### Coefficient plot
+The coefficient plot summarizes the estimated regression effects with 95%
+confidence intervals. This makes it clear which predictors are significantly
+different from zero and in what direction:
+
+<br>
 <img src="../gen/output/regression-results/regression_coefficients.png"
-     alt="Coefficient estimates with 95% confidence intervals" style="width:55%;max-width:550px">
+     alt="Coefficient estimates with 95% confidence intervals"
+     style="width:55%;max-width:550px">
+<br><br>
 
-### Diagnostics: residuals vs fitted
-<img src="../gen/output/regression-results/residuals_vs_fitted.png"
-     alt="Residuals vs Fitted plot" style="width:50%;max-width:500px">
-     
+## Conclusions and Recommendations
+
+### Conclusions  
+This study examined how movie runtime influences IMDb ratings and whether this relationship is moderated by genre (Comedy, Adventure, Action) and release period (2011–2015 vs. 2016–2020). Using a dataset of over 20,000 films, we estimated an OLS regression with interaction terms, controlling for audience size through log-transformed vote counts.  
+
+This led to the following key findings:  
+
+- **Runtime effect**: For Comedy films released in 2011–2015 (the reference group), runtime had only a modest effect on IMDb ratings. The slope varied across genres and periods, showing that audience tolerance for longer runtimes depends on context.  
+- **Genre differences**: Action films were rated significantly lower than Comedy, while Adventure films were rated slightly higher. Importantly, both Action and Adventure showed different runtime–rating slopes compared to Comedy, suggesting genre conventions influence how audiences perceive film length.  
+- **Period differences**: Films released in 2016–2020 were generally rated lower than those from 2011–2015, with some evidence that the runtime effect also shifted in this later period. This aligns with the rise of streaming and potential changes in audience expectations.  
+- **Votes as control**: The number of audience votes was a strong predictor, confirming that widely viewed films tend to receive higher and more stable ratings.  
+
+Overall, runtime does matter, but its influence is conditional on genre and release period. Adventure audiences appear more tolerant of longer runtimes than Comedy audiences, while Action audiences penalize longer runtimes more strongly. After 2015, movies overall received slightly lower ratings, indicating shifting audience preferences in the streaming era.  
+
+### Recommendations  
+
+Based on these results, we suggest the following recommendations:  
+
+- **Film studios**:  
+  - For *Action* films, keeping runtimes tighter may help maintain audience satisfaction, as longer runtimes appear to reduce ratings.  
+  - *Adventure* films can sustain longer runtimes, which may support more complex storytelling without penalizing ratings.  
+  - *Comedies* remain best received at shorter, more conventional lengths.  
+
+- **Streaming platforms**:  
+  - Since the 2016–2020 period shows lower ratings overall, platforms may need to adjust recommendation algorithms or promotional strategies to counteract declining audience evaluations.  
+  - Tailoring recommendations by runtime preferences (e.g., shorter comedies, longer adventures) could improve user satisfaction.  
+
+- **Cinemas and marketing teams**:  
+  - Marketing should emphasize “epic scale” and immersion for longer Adventure films, while highlighting pacing and efficiency for Action and Comedy.  
+  - Runtime can be a strategic element in positioning films to target audiences.  
+
+### Limitations and Future Research   
+This study has several limitations:  
+
+- The analysis focused only on three genres (Comedy, Action, Adventure), excluding others such as Drama or Horror that may behave differently.  
+- IMDb ratings, while widely used, are subject to self-selection bias and may not fully reflect general audience opinion.  
+- The period split (2011–2015 vs. 2016–2020) captures the rise of streaming but does not account for other industry shifts (e.g., franchise dominance, COVID-19 disruptions).  
+
+Future research could expand to other genres, platforms, and audience measures (e.g., box office revenues, streaming completion rates) to build a fuller picture of how runtime affects audience perception in different contexts.  
