@@ -1,21 +1,14 @@
-# R defaults
-.Rhistory
-.RData
-.Rproj.user/
+/*
+!.gitignore
+!README.md
+!makefile    # add !Makefile too if capitalized
+!/src/
+!/src/**
 
-# macOS
-.DS_Store
-
-# data/gen structure rules (as we set earlier)
-data/**
-!data/
-!data/.gitignore
-
-gen/**
-!gen/
-!gen/.gitignore
-!gen/output/
-!gen/temp/
-!gen/output/.gitignore
-!gen/temp/.gitignore
-src/gen/
+# ignore report build artifacts inside src/reporting
+src/reporting/**/*_files/
+src/reporting/**/_cache/
+src/reporting/**/cache/
+src/reporting/**/*.html
+src/reporting/**/*.pdf
+src/reporting/**/*.docx
