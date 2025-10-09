@@ -1,7 +1,7 @@
-.PHONY: all install desc_analysis regression clean
+.PHONY: all install desc_analysis regression results clean
 
 # run everything here
-all: regression
+all: results
 
 install:
 	Rscript install_packages_for_analysis.R
@@ -14,8 +14,14 @@ install:
 desc_analysis: install ../../gen/output/final_dataset.csv
 	Rscript desc_analysis.R
 
-regression: desc_analysis
+# produce the model file (regression.R writes ../../gen/output/regression_model.rds)
+../../gen/output/regression_model.rds: regression.R desc_analysis
 	Rscript regression.R
+
+# results depend on the model file (not the script)
+results: ../../gen/output/regression_model.rds
+	Rscript make_reg_outputs.R
 
 clean:
 	rm -f ../../gen/output/desc-analysis-figures/*.png || true
+	rm -f ../../gen/output/regression_model.rds || true
