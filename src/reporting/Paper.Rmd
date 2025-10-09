@@ -6,8 +6,10 @@ output:
   html_document:
     toc: true
     number_sections: true
-editor_options: 
-  markdown: 
+  pdf_document:
+    toc: true
+editor_options:
+  markdown:
     wrap: 72
 ---
 
@@ -153,7 +155,7 @@ knitr::kable(year_tbl, digits = 2, caption = "Summary by Year")
 #### Film output over time 
 The number of films released annually increased steadily from 2011 until around 2018, reaching a peak of over 2,000 titles per year. After 2018, we observe a decline in output, with a particularly sharp drop in 2020. This is likely due to the disruptions in global film production during the COVID-19 pandemic.
 <br><br> 
-<img src="../gen/output/desc-analysis-figures/films_per_year.png" alt="Number of films per year" style="width:60%"> 
+<img src="../../gen/output/desc-analysis-figures/films_per_year.png" alt="Number of films per year" style="width:60%"> 
 <br> 
 
 #### Runtime patterns 
@@ -162,19 +164,19 @@ Since runtime is our main explanatory variable, we first explore its distributio
 ##### Average runtime per year
 The average runtime of films remained remarkably consistent across the 2011–2020 period, fluctuating only within a narrow range of about 97–102 minutes. This stability suggests that runtime norms were fairly entrenched across the decade.
 <br><br> 
-<img src="../gen/output/desc-analysis-figures/avgruntime_per_year.png" alt="Average runtime per year" style="width:60%">
+<img src="../../gen/output/desc-analysis-figures/avgruntime_per_year.png" alt="Average runtime per year" style="width:60%">
 <br> 
 
 ##### Distribution of runtimes
 Most films fell into a range of 80–120 minutes, with a clear peak around 95–105 minutes. Only a small share of films were much shorter or longer, indicating that runtimes cluster strongly around conventional feature-length standards. 
 <br><br> 
-<img src="../gen/output/desc-analysis-figures/dist_of_runtimes.png" alt="Distribution of runtimes" style="width:60%">
+<img src="../../gen/output/desc-analysis-figures/dist_of_runtimes.png" alt="Distribution of runtimes" style="width:60%">
 <br> 
 
 ##### Runtime distribution by genre
 When broken down by genre, Action films showed the highest median runtimes and the widest spread, reflecting the blockbuster tendency toward longer movies. Adventure films were slightly shorter but still above 95 minutes on average, while Comedies were noticeably shorter and less variable, clustering tightly around the 90–100 minute range.
 <br><br> 
-<img src="../gen/output/desc-analysis-figures/runtimedist_by_genre.png" alt="Runtime distribution by genre" style="width:60%">
+<img src="../../gen/output/desc-analysis-figures/runtimedist_by_genre.png" alt="Runtime distribution by genre" style="width:60%">
 <br> 
 
 #### IMDb ratings (main outcome)
@@ -183,25 +185,25 @@ Ratings are the key dependent variable of the research. By describing their dist
 ##### Average rating per year
 Mean IMDb ratings across all films were stable at around 5.6 for most of the decade. However, after 2017 a modest decline is visible, suggesting either changes in the kinds of films being produced or shifts in audience evaluation.
 <br><br> 
-<img src="../gen/output/desc-analysis-figures/avgrating_per_year.png" alt="Average rating per year" style="width:60%">
+<img src="../../gen/output/desc-analysis-figures/avgrating_per_year.png" alt="Average rating per year" style="width:60%">
 <br> 
 
 ##### Distribution of IMDb ratings
 The histogram shows that most films score between 5 and 6, with relatively few extreme ratings. Very high ratings (above 8) are rare, which reflects IMDb’s tendency toward a compressed rating scale centered in the mid-range.
 <br><br> 
-<img src="../gen/output/desc-analysis-figures/dist_of_ratings.png" alt="Distribution of IMDb ratings" style="width:60%">
+<img src="../../gen/output/desc-analysis-figures/dist_of_ratings.png" alt="Distribution of IMDb ratings" style="width:60%">
 <br> 
 
 ##### Average rating by genre
 Adventure films achieved the highest average ratings (≈5.7), slightly above Comedy and Action. Comedies and Action movies clustered more closely together (≈5.5 to 5.6), indicating that modest genre differences in audience evaluations exist.
 <br><br> 
-<img src="../gen/output/desc-analysis-figures/avgrating_per_genre.png" alt="Average rating by genre" style="width:60%">
+<img src="../../gen/output/desc-analysis-figures/avgrating_per_genre.png" alt="Average rating by genre" style="width:60%">
 <br> 
 
 ##### Heatmap: average IMDb rating per Year x Genre
 Across time, all three genres showed stable ratings without major trends. Adventure films consistently outperformed the others, while Action films slightly underperformed, but the differences were small. No single year shows any significant spikes or drops for any genre.
 <br><br> 
-<img src="../gen/output/desc-analysis-figures/heatmap_of_averagerating_per_year.png" alt="Heatmap rating by year × genre" style="width:60%">
+<img src="../../gen/output/desc-analysis-figures/heatmap_of_averagerating_per_year.png" alt="Heatmap rating by year × genre" style="width:60%">
 <br> 
 
 #### Votes (control variable)
@@ -210,13 +212,13 @@ Finally, we consider votes, which serve as a control variable in the regression 
 ##### Distribution of votes (log scale)
 The vote distribution is highly right-skewed: the majority of films received only a few hundred or thousand votes, while a small number attracted hundreds of thousands or even millions. This reflects the blockbuster vs. niche divide in audience reach.
 <br><br> 
-<img src="../gen/output/desc-analysis-figures/logdist_of_votes.png" alt="Distribution of votes (log scale)" style="width:60%">
+<img src="../../gen/output/desc-analysis-figures/logdist_of_votes.png" alt="Distribution of votes (log scale)" style="width:60%">
 <br> 
 
 ##### Average number of votes by genre
 Adventure films were the most popular in terms of audience engagement, receiving the highest average vote counts. Action films also attracted more attention and votes, while Comedies had fewer votes on average, which might suggest smaller or more fragmented audiences.
 <br><br> 
-<img src="../gen/output/desc-analysis-figures/avgvotes_per_genre.png" alt="Average votes by genre" style="width:60%">
+<img src="../../gen/output/desc-analysis-figures/avgvotes_per_genre.png" alt="Average votes by genre" style="width:60%">
 <br> 
 
 ## Regression Results
@@ -331,13 +333,13 @@ linearity and equal variance hold:
   supporting the model’s linear specification.
 
 <br>
-<img src="../gen/output/regression-results/residuals_vs_fitted.png"
+<img src="../../gen/output/regression-results/residuals_vs_fitted.png"
      alt="Residuals vs Fitted plot"
      style="width:50%;max-width:500px">
 <br>
 
-### Main results table
-<img src="../gen/output/regression-results/regression_table_robust.png"
+### Main Results Table
+<img src="../../gen/output/regression-results/regression_table_robust.png"
      alt="Regression results (HC3 robust SEs)" style="width:50%;max-width:500px">
 <p style="font-style:italic;">
 Ordinary least squares with HC3 robust standard errors.
@@ -388,7 +390,7 @@ confidence intervals. This makes it clear which predictors are significantly
 different from zero and in what direction:
 
 <br>
-<img src="../gen/output/regression-results/regression_coefficients.png"
+<img src="../../gen/output/regression-results/regression_coefficients.png"
      alt="Coefficient estimates with 95% confidence intervals"
      style="width:55%;max-width:550px">
 <br><br>
