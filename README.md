@@ -21,7 +21,6 @@ Previous research looked at the individual effects of runtime, release year and 
 
 ## Data
 
-- What dataset(s) did you use? How was it obtained?
   We are using two files from the IMDB database:
   1) title.basics.tsv.gz (contains unique identifier of the title, the type/format of the title, original title, the release year of a title, TV Series end year, primary runtime of the title, genres)
   2) title.ratings.tsv.gz (contains unique identifier of the title, averageRating and number of votes the title has received)
@@ -82,6 +81,7 @@ The results from this project can provide data-driven insights for the film indu
   Studios can optimize runtimes by genre to improve audience satisfaction.
   Streaming platforms can adjust recommendation algorithms.
   Cinemas and marketers can use runtime as a strategic element in positioning films to target audiences.
+  
 ## Repository Overview 
 ```text
 .
