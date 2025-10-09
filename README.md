@@ -117,23 +117,41 @@ The results from this project can provide data-driven insights for the film indu
 ## Repository Overview 
 .
 ├── .gitignore
+
 ├── README.md
+
 ├── makefile
+
 └── src/
+
     ├── analysis/
+    
     │   ├── Makefile
+    
     │   ├── desc_analysis.R
+    
     │   ├── install_packages_for_analysis.R
+    
     │   ├── make_reg_outputs.R
+    
     │   └── regression.R
+    
     ├── data-preparation/
+    
     │   ├── DataExploration.Rmd
+    
     │   ├── Makefile
+    
     │   ├── clean_and_merge.R
+    
     │   ├── download.R
+    
     │   └── install_packages_for_data_preparation.R
+    
     └── reporting/
+    
         ├── Makefile
+        
         └── Paper.Rmd
         
 
