@@ -398,14 +398,13 @@ different from zero and in what direction:
 ## Conclusions and Recommendations
 
 ### Conclusions  
-This study examined how movie runtime influences IMDb ratings and whether this relationship is moderated by genre (Comedy, Adventure, Action) and release period (2011–2015 vs. 2016–2020). Using a dataset of over 20,000 films, we estimated an OLS regression with interaction terms, controlling for audience size through log-transformed vote counts.  
-
-This led to the following key findings:  
+This study examined how movie runtime influences IMDb ratings and whether this relationship is moderated by genre (Comedy, Adventure, Action) and release period (2011–2015 vs. 2016–2020). Using a dataset of over 20,000 ratings on IMDb, we estimated an OLS regression with interaction terms, controlling for audience size through log-transformed vote counts.  
+After running the OLS regression with interaction terms we found the following:  
 
 - **Runtime effect**: For Comedy films released in 2011–2015 (the reference group), runtime had only a modest effect on IMDb ratings. The slope varied across genres and periods, showing that audience tolerance for longer runtimes depends on context.  
-- **Genre differences**: Action films were rated significantly lower than Comedy, while Adventure films were rated slightly higher. Importantly, both Action and Adventure showed different runtime–rating slopes compared to Comedy, suggesting genre conventions influence how audiences perceive film length.  
+- **Genre differences**: Action films were rated significantly lower than Comedy, while Adventure films were rated slightly higher. Further, both Action and Adventure showed different runtime–rating slopes compared to Comedy, suggesting genre conventions influence how audiences perceive film length.  
 - **Period differences**: Films released in 2016–2020 were generally rated lower than those from 2011–2015, with some evidence that the runtime effect also shifted in this later period. This aligns with the rise of streaming and potential changes in audience expectations.  
-- **Votes as control**: The number of audience votes was a strong predictor, confirming that widely viewed films tend to receive higher and more stable ratings.  
+- **Votes as control variable**: The number of audience votes was a strong predictor, confirming that widely viewed films tend to receive higher and more stable ratings.  
 
 Overall, runtime does matter, but its influence is conditional on genre and release period. Adventure audiences appear more tolerant of longer runtimes than Comedy audiences, while Action audiences penalize longer runtimes more strongly. After 2015, movies overall received slightly lower ratings, indicating shifting audience preferences in the streaming era.  
 
@@ -414,23 +413,23 @@ Overall, runtime does matter, but its influence is conditional on genre and rele
 Based on these results, we suggest the following recommendations:  
 
 - **Film studios**:  
-  - For *Action* films, keeping runtimes tighter may help maintain audience satisfaction, as longer runtimes appear to reduce ratings.  
-  - *Adventure* films can sustain longer runtimes, which may support more complex storytelling without penalizing ratings.  
-  - *Comedies* remain best received at shorter, more conventional lengths.  
+  - For Action films, keeping runtimes tighter may help maintain audience satisfaction, as longer runtimes appear to lower the ratings.  
+  - Adventure films can sustain longer runtimes, which may support more complex storytelling without lowering the ratings.  
+  - Comedy films remain best received at shorter, more conventional lengths.  
 
 - **Streaming platforms**:  
-  - Since the 2016–2020 period shows lower ratings overall, platforms may need to adjust recommendation algorithms or promotional strategies to counteract declining audience evaluations.  
-  - Tailoring recommendations by runtime preferences (e.g., shorter comedies, longer adventures) could improve user satisfaction.  
+  - Since the 2016–2020 period shows lower ratings in general, platforms may need to adjust recommendation algorithms or promotional strategies to counteract declining audience evaluations.  
+  - Improving recommendations by runtime preferences (shorter comedies, longer adventures) could improve user satisfaction.  
 
 - **Cinemas and marketing teams**:  
-  - Marketing should emphasize “epic scale” and immersion for longer Adventure films, while highlighting pacing and efficiency for Action and Comedy.  
+  - Marketing should emphasize the large scale and immersion for longer Adventure films, while highlighting pacing and/or efficiency for Action and Comedy.  
   - Runtime can be a strategic element in positioning films to target audiences.  
 
 ### Limitations and Future Research   
 This study has several limitations:  
 
 - The analysis focused only on three genres (Comedy, Action, Adventure), excluding others such as Drama or Horror that may behave differently.  
-- IMDb ratings, while widely used, are subject to self-selection bias and may not fully reflect general audience opinion.  
-- The period split (2011–2015 vs. 2016–2020) captures the rise of streaming but does not account for other industry shifts (e.g., franchise dominance, COVID-19 disruptions).  
+- IMDb ratings, while widely used, are subject to self-selection bias and may not fully reflect general audience opinion. 
+- The period split (2011–2015 vs. 2016–2020) captures the rise of streaming but does not fully account for other industry shifts (e.g., franchise dominance, COVID-19 disruptions).  
 
-Future research could expand to other genres, platforms, and audience measures (e.g., box office revenues, streaming completion rates) to build a fuller picture of how runtime affects audience perception in different contexts.  
+Future research could expand to other genres, platforms, and audience measures (for example box office revenues, streaming completion rates) to build a fuller picture of how runtime affects audience perception in different contexts.  
