@@ -108,20 +108,49 @@ where:
 
 
 ## Preview of Findings 
-- Describe the gist of your findings (save the details for the final paper!)
-- How are the findings/end product of the project deployed?
-- Explain the relevance of these findings/product. 
+Runtime influences IMDb ratings only modestly overall, but the effect varies by genre and release period. Adventure films tolerate longer runtimes best, Action films tend to be penalized for them, and movies released in 2016–2020 received slightly lower ratings overall. Audience size (number of votes) is a strong positive predictor of ratings.
 
+The results from this project can provide data-driven insights for the film industry.
+  Studios can optimize runtimes by genre to improve audience satisfaction.
+  Streaming platforms can adjust recommendation algorithms.
+  Cinemas and marketers can use runtime as a strategic element in positioning films to target audiences.
 ## Repository Overview 
-
-**Include a tree diagram that illustrates the repository structure*
+.
+├── .gitignore
+├── README.md
+├── makefile
+└── src/
+    ├── analysis/
+    │   ├── Makefile
+    │   ├── desc_analysis.R
+    │   ├── install_packages_for_analysis.R
+    │   ├── make_reg_outputs.R
+    │   └── regression.R
+    ├── data-preparation/
+    │   ├── DataExploration.Rmd
+    │   ├── Makefile
+    │   ├── clean_and_merge.R
+    │   ├── download.R
+    │   └── install_packages_for_data_preparation.R
+    └── reporting/
+        ├── Makefile
+        └── Paper.Rmd
+        
 
 ## Dependencies 
 This project runs in R (≥ 4.0) and requires Make (included with macOS/Linux; available via Git Bash or Rtools on Windows). All necessary R packages are listed and installed through the setup scripts (install_packages_for_data_preparation.R and install_packages_for_analysis.R) included in the data preparation and analysis folders. All required R packages are installed automatically when you run make.
 
 ## Running Instructions 
 
-*Provide step-by-step instructions that have to be followed to run this workflow.*
+1. Clone the repo and open a terminal in the project root (where makefile is).
+
+2. Run the full pipeline by typing "make" in the terminal"
+
+3. Results appear in gen/output/ (intermediates in gen/temp/). 
+
+4. Run "knit src/reporting/Paper.Rmd"" in RStudio to create a report.
+
+5. Clean generated files by typing "make clean" in the terminal
 
 ## About 
 
