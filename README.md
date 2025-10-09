@@ -115,45 +115,28 @@ The results from this project can provide data-driven insights for the film indu
   Streaming platforms can adjust recommendation algorithms.
   Cinemas and marketers can use runtime as a strategic element in positioning films to target audiences.
 ## Repository Overview 
+```text
 .
 ├── .gitignore
-
 ├── README.md
-
 ├── makefile
-
 └── src/
-
     ├── analysis/
-    
     │   ├── Makefile
-    
     │   ├── desc_analysis.R
-    
     │   ├── install_packages_for_analysis.R
-    
     │   ├── make_reg_outputs.R
-    
     │   └── regression.R
-    
     ├── data-preparation/
-    
     │   ├── DataExploration.Rmd
-    
     │   ├── Makefile
-    
     │   ├── clean_and_merge.R
-    
     │   ├── download.R
-    
     │   └── install_packages_for_data_preparation.R
-    
     └── reporting/
-    
         ├── Makefile
-        
         └── Paper.Rmd
-        
+```
 
 ## Dependencies 
 This project runs in R (≥ 4.0) and requires Make (included with macOS/Linux; available via Git Bash or Rtools on Windows). All necessary R packages are listed and installed through the setup scripts (install_packages_for_data_preparation.R and install_packages_for_analysis.R) included in the data preparation and analysis folders. All required R packages are installed automatically when you run make.
