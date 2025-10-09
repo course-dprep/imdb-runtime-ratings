@@ -145,7 +145,7 @@ This project runs in R (≥ 4.0) and requires Make (included with macOS/Linux; a
 
 1. Clone the repo and open a terminal in the project root (where makefile is).
 
-2. Run the full pipeline by typing "make" in the terminal"
+2. Run the full pipeline by typing "make" in the terminal.
 
 3. Results appear in gen/output/ (intermediates in gen/temp/). 
 
