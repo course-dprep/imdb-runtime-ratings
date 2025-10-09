@@ -145,7 +145,7 @@ ggplot(basics, aes(x = startYear, fill = runtime_missing)) +
 The figure below illustrates how missing runtime values are distributed across the ten most common movie genres.  
 The turquoise segments represent the share of films lacking runtime information.  
 The results show that missing runtimes are not evenly distributed: genres such as **Documentary** and **Biography** have a noticeably higher proportion of missing values, while **Action** and **Comedy** films tend to have more complete runtime data.  
-This pattern suggests that certain types of movies—particularly documentaries and biographical films—may be less consistently documented in the IMDb database.
+This pattern suggests that certain types of movies, particularly documentaries and biographical films may be less consistently documented in the IMDb database.
 ```{r}
 # Missingness by genre
 ggplot(basics_long, aes(x = genres, fill = runtime_missing)) +
@@ -159,7 +159,7 @@ ggplot(basics_long, aes(x = genres, fill = runtime_missing)) +
 Figure 3 examines whether the likelihood of missing runtime information differs by movie popularity, as measured by the number of IMDb votes.  
 The turquoise bars represent films without recorded runtimes.  
 The plot shows that **movies with very few votes (0–100)** have a noticeably higher proportion of missing runtimes, while films with more than 1,000 votes almost never lack this information.  
-This suggests that missing data are more common among lesser-known or recently added titles that have not yet accumulated many viewer ratings.
+This suggests that missing data are more common among lesser known or recently added titles that have not yet accumulated many viewer ratings.
 ```{r}
 # Missingness by popularity (number of votes)
 merged_df %>%
