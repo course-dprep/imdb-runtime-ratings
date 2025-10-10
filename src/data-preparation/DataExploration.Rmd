@@ -21,7 +21,7 @@ and the remaining packages assist with file management and report generation.
 ```{r packages, warning=FALSE, message=FALSE}
 #
 packages <- c("dplyr", "readr", "fs", "data.table", "R.utils", 
-              "stringr", "tinytex", "ggplot2", "forcats", "tidyr")
+              "stringr", "tinytex", "ggplot2", "forcats", "tidyr","here")
 installed <- packages %in% installed.packages()[, "Package"]
 if (any(!installed)) install.packages(packages[!installed])
 
@@ -36,35 +36,44 @@ library(tinytex)
 library(ggplot2)
 library(forcats)
 library(tidyr)
+library(here)
 ```
 
 ## Data Pulling Script
 This script retrieves the IMDb datasets from the official source, saves them locally, and loads them into R for further analysis.
 ```{r}
 base_url <- "https://datasets.imdbws.com/"                 # Base URL for IMDb datasets
-files <- c("title.basics.tsv.gz", "title.ratings.tsv.gz")  # IMDb dataset files to download
+files <- c("title.basics.tsv.gz", "title.ratings.tsv.gz")  # The two datasets we want to download
 
-# Set up output directory 
-out_dir <- "data/imdb"              # Folder to store the downloaded files
-dir_create(out_dir)                 # Create the directory if it doesn't already exist
+# Set up output directory (for raw IMDb downloads)
+out_dir <- here::here("data")       # store downloads in /data
+fs::dir_create(out_dir)             # Create the directory if it doesn't already exist
 
 # Download IMDb files if not already present locally
 for (f in files) {
   dest <- file.path(out_dir, f)           # Full local path for each file
   if (!file_exists(dest)) {               # Only download if file is missing
     download.file(paste0(base_url, f),    # Construct the full URL
-    destfile = dest,                      # Where to save it locally
-    mode = "wb",                          # Write in binary mode (important for .gz files)
-    quiet = TRUE)                         # Suppress download messages
-
+                  destfile = dest,                      # Where to save it locally
+                  mode = "wb",                          # Write in binary mode (important for .gz files)
+                  quiet = TRUE)                         # Suppress download messages
+    
   }
 }
 
-# Load IMDb datasets using fread() for efficiency
+# Load IMDb datasets into R
+# fread() from data.table is used for fast reading of large .tsv files
+
 basics   <- fread(file.path(out_dir, "title.basics.tsv.gz"),
                   sep = "\t", na.strings = "\\N", quote = "")
 ratings  <- fread(file.path(out_dir, "title.ratings.tsv.gz"),
                   sep = "\t", na.strings = "\\N", quote = "")
+
+dir_create(here("gen", "temp"))
+write.csv(basics,  here("gen", "temp", "basics.csv"),  row.names = FALSE)
+write.csv(ratings, here("gen", "temp", "ratings.csv"), row.names = FALSE)
+
+message("Data preparation complete. Files saved in folder: ", here::here("gen", "temp"))
 ```
 
 ## Quick data exploration

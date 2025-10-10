@@ -23,7 +23,7 @@ $(OUTPUT)/final_dataset.csv: clean_and_merge.R $(TEMP)/basics.csv $(TEMP)/rating
 $(OUTPUT)/DataExploration.html: DataExploration.Rmd $(OUTPUT)/final_dataset.csv | install
 	mkdir -p $(OUTPUT)
 	Rscript --vanilla -e "if (!rmarkdown::pandoc_available()) { \
-	                       message('⚠️ Pandoc not found → writing Markdown instead'); \
+	                       message('Pandoc not found, writing Markdown instead'); \
 	                       knitr::knit('DataExploration.Rmd', output='$(OUTPUT)/DataExploration.md'); \
 	                     } else { \
 	                       rmarkdown::render('DataExploration.Rmd', output_format='html_document', \
