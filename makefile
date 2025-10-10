@@ -1,22 +1,24 @@
-
 .PHONY: all data-preparation analysis report clean help
 SHELL := bash
-# Run everything (data-prep then analysis)
-.PHONY: data-preparation analysis report
 
-# Run the data-preparation Makefile
+# Default: run everything
+all: data-preparation analysis report
+
+# 1) data-prep
 data-preparation:
 	"$(MAKE)" -C src/data-preparation
 
-# Run the analysis Makefile
-analysis:
+# 2) analysis (runs after data-prep)
+analysis: data-preparation
 	"$(MAKE)" -C src/analysis
-	
-report:
-	"$(MAKE)" -C src/reporting
 
-# Clean generated files from both pipelines
+# 3) reporting (runs after analysis)
+report: analysis
+	"$(MAKE)" -C src/reporting report   # specify 'report' target in sub-Makefile
+                                        # (or ensure that sub-Makefile has `all: report`)
+
+# Clean all
 clean:
 	-"$(MAKE)" -C src/data-preparation clean
-	-$"(MAKE)" -C src/analysis clean
-	-$"(MAKE)" -C src/reporting
+	-"$(MAKE)" -C src/analysis clean
+	-"$(MAKE)" -C src/reporting clean
