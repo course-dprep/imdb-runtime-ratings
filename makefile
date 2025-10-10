@@ -1,4 +1,4 @@
-.PHONY: all data-preparation analysis report clean help
+.PHONY: all data-preparation analysis report clean
 SHELL := bash
 
 # Default: run everything
