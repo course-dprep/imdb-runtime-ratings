@@ -12,3 +12,8 @@ src/reporting/**/cache/
 src/reporting/**/*.html
 src/reporting/**/*.pdf
 src/reporting/**/*.docx
+.Rproj.user
+
+# LaTeX / knit artifacts
+*.log
+*.tex
