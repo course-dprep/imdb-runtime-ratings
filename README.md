@@ -117,7 +117,7 @@ This project runs in R (≥ 4.0) and requires Make (included with macOS/Linux; a
 
 3. Results appear in gen/output/ (intermediates in gen/temp/). 
 
-4. Run "knit src/reporting/Paper.Rmd"" in RStudio to create a report.
+4. Run "knit src/reporting/report.Rmd"" in RStudio to create a report.
 
 5. Clean generated files by typing "make clean" in the terminal
 
