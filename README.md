@@ -107,7 +107,8 @@ The results from this project can provide data-driven insights for the film indu
 ```
 
 ## Dependencies 
-This project runs in R (≥ 4.0) and requires Make (included with macOS/Linux; available via Git Bash or Rtools on Windows). All necessary R packages are listed and installed through the setup scripts (install_packages_for_data_preparation.R and install_packages_for_analysis.R) included in the data preparation and analysis folders. All required R packages are installed automatically when you run make.
+This project runs in R (≥ 4.0) and requires Make (included with macOS/Linux; available via Git Bash or Rtools on Windows) and Pandoc [Installation guide] (https://tilburgsciencehub.com/topics/computer-setup/software-installation/document-creation/pandoc/). 
+All necessary R packages are listed and installed through the setup scripts (install_packages_for_data_preparation.R and install_packages_for_analysis.R) included in the data preparation and analysis folders. All required R packages are installed automatically when you run make.
 
 ## Running Instructions 
 
@@ -117,7 +118,7 @@ This project runs in R (≥ 4.0) and requires Make (included with macOS/Linux; a
 
 3. Results appear in gen/output/ (intermediates in gen/temp/). 
 
-4. Run "knit src/reporting/report.Rmd"" in RStudio to create a report.
+4. Run "knit src/reporting/report.Rmd" in RStudio to create a report.
 
 5. Clean generated files by typing "make clean" in the terminal
 
