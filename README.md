@@ -118,9 +118,7 @@ All necessary R packages are listed and installed through the setup scripts (ins
 
 3. Results appear in gen/output/ (intermediates in gen/temp/). 
 
-4. Run "knit src/reporting/report.Rmd" in RStudio to create a report.
-
-5. Clean generated files by typing "make clean" in the terminal
+4. Clean generated files by typing "make clean" in the terminal
 
 ## About 
 
