@@ -103,7 +103,7 @@ The results from this project can provide data-driven insights for the film indu
     │   └── install_packages_for_data_preparation.R
     └── reporting/
         ├── Makefile
-        └── Paper.Rmd
+        └── report.Rmd
 ```
 
 ## Dependencies 
